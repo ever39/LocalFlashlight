@@ -29,6 +29,7 @@ namespace localFlashlight
         public static ConfigEntry<float> UIHiddenAlpha;
         public static ConfigEntry<bool> UIDisabledLowBatteryWarning;
         public static ConfigEntry<float> LowBatteryWarningPercentage;
+        public static ConfigEntry<float> flashVolume;
 
         public static AssetBundle bundle;
 
@@ -54,6 +55,7 @@ namespace localFlashlight
             UIHiddenAlpha = base.Config.Bind<float>("Indicator", "Indicator Hidden Opacity", 0.2f, "The opacity of the indicator when the flashlight is not in use for a while");
             UIDisabledLowBatteryWarning = base.Config.Bind<bool>("Indicator", "Low Battery Warning Toggle", true, "Should the mod display a low battery warning when the indicator is disabled?");
             LowBatteryWarningPercentage = base.Config.Bind<float>("Indicator", "Low Battery Warning Percentage", 30, "The percentage at which the low battery warning shows up");
+            flashVolume = base.Config.Bind<float>("Other", "Volume", 0.5f, "Volume of all the flashlight sounds");
 
             //assetbundle usage
             using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("localFlashlight.bundle");

@@ -46,6 +46,10 @@ namespace localFlashlight
         private float regenCool;
         public static float UIHideTime = Plugin.hideUIDelay.Value;
         private Color setColor = new Color((float)Plugin.colorRed.Value / 255, (float)Plugin.colorGreen.Value / 255, (float)Plugin.colorBlue.Value / 255);
+        private float lightIntensity = Plugin.intensity.Value;
+        private float lightRange = Plugin.range.Value;
+        private float lightSpotAngle = Plugin.angle.Value;
+        private float flashVolume = Plugin.flashVolume.Value;
 
         //only used to set the inputs
         public void Awake()
@@ -92,14 +96,14 @@ namespace localFlashlight
                         locallight.type = LightType.Spot;
                         locallight.shape = LightShape.Cone;
                         locallight.color = setColor;
-                        locallight.intensity = 350;
-                        locallight.range = 17;
-                        locallight.spotAngle = 60;
+                        locallight.intensity = lightIntensity;
+                        locallight.range = lightRange;
+                        locallight.spotAngle = lightSpotAngle;
 
                         flashSource = soundObject.AddComponent<AudioSource>();
                         flashSource.loop = false;
                         flashSource.playOnAwake = false;
-                        flashSource.volume = 0.5f;
+                        flashSource.volume = flashVolume;
                         flashSource.priority = 0;
 
                         if (!positioned)
