@@ -14,7 +14,7 @@ The mod adds a flashlight that uses a battery system which recharges when not in
 
 -Custom colors can be set for the light and HUD.
 
-## Screenshots
+## Indicator config styles
 -Bar style
 
 ![bar style](https://github.com/ever39/LocalFlashlight/raw/main/assets/readmeAssets/barStyle.gif)
