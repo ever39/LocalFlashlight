@@ -27,7 +27,7 @@ The mod adds a flashlight that uses a battery system which recharges when not in
 
 ![full style](https://github.com/ever39/LocalFlashlight/raw/main/assets/readmeAssets/fullStyle.gif)
 
--Disabled style warning
+-Disabled style warning (can be disabled)
 
 ![low battery warning](https://github.com/ever39/LocalFlashlight/raw/main/assets/readmeAssets/disabledWarning.png)
 
