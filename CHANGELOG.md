@@ -4,3 +4,4 @@
 - Added some debug logs (LightController made, light toggle)
 - Fixed flashlight toggling when pressing the toggle key in the pause menu
 - Added battery regen cooldown config
+- Volume now updates immediately after config change
