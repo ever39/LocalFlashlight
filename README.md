@@ -10,18 +10,26 @@ The mod adds a flashlight that uses a battery system which recharges when not in
 
 -The battery's max time and recharge multiplier can also be configured.
 
--The HUD has four different styles (Disabled, Bar, Percentage, All).
+-The HUD has six different styles (Disabled, Bar, Percentage, Circular Bar, Vertical Bar, All).
 
 -Custom colors can be set for the light and HUD.
 
 ## Indicator config styles
--Bar style
+-Bar
 
 ![bar style](https://github.com/ever39/LocalFlashlight/raw/main/assets/readmeAssets/barStyle.gif)
 
--Percentage style
+-Percentage
 
 ![percent style](https://github.com/ever39/LocalFlashlight/raw/main/assets/readmeAssets/percentageStyle.gif)
+
+-Circular bar
+
+![full style](https://github.com/ever39/LocalFlashlight/raw/main/assets/readmeAssets/circularBar.gif)
+
+-Vertical bar
+
+![full style](https://github.com/ever39/LocalFlashlight/raw/main/assets/readmeAssets/verticalBar.gif)
 
 -Full style
 
