@@ -12,7 +12,7 @@ namespace localFlashlight
     [BepInPlugin(GUID, NAME, VERSION)]
     public class Plugin : BaseUnityPlugin
     {
-        public const string VERSION = "1.1.1";
+        public const string VERSION = "1.2.0";
         public const string GUID = "command.localFlashlight";
         public const string NAME = "Local Flashlight";
 
