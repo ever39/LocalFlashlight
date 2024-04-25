@@ -10,7 +10,7 @@ The mod adds a flashlight that uses a battery system which recharges when not in
 The mod can be installed through either Thunderstore Mod Manager or r2modman, or it can be installed manually.
 Manual installation requires installing BepInEx, then placing the mod folder inside the ```BepInEx/plugins``` folder. 
 
-Configuration of the mod can be done after starting up the game with the mod enabled through the Config editor (Thunderstore Mod Manager or r2modman) or by opening the ```command.localFlashlight.cfg``` file made by the mod in the ```BepInEx/config``` folder
+Configuration of the mod can be done after starting up the game with the mod enabled through the Config editor (Thunderstore Mod Manager or r2modman) or by opening the ```command.localFlashlight.cfg``` file made by the mod in the ```BepInEx/config``` folder and editing the config values
 
 ## Mod configs
 
