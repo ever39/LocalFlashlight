@@ -7,3 +7,11 @@
     CircularBar,
     All
 }
+
+public enum TextDisplayOptions
+{
+    Percent,
+    AccuratePercent,
+    Time,
+    All
+}

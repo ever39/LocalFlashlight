@@ -7,37 +7,35 @@ namespace localFlashlight
 {
     internal class HUDPatch
     {
+        #region Values
         private static GameObject UIContainer, frameObj, meterObj, textObj, warningObj;
         private static TextMeshProUGUI textmesh;
-        private static Image frameImage;
-        private static Image meterImage;
-        private static Image warningImage;
-        private static Sprite frame;
-        private static Sprite meter;
+        private static Image frameImage, meterImage, warningImage;
+        private static Sprite frame, meter;
         private static Sprite warning = Plugin.bundle.LoadAsset<Sprite>("warning");
-        private static float fadeAlpha = Plugin.UIHiddenAlpha.Value;
         private static bool fadeIn, fadeOut = false;
         private static bool warningEnabled = Plugin.UIDisabledLowBatteryWarning.Value;
         private static float warningPercent = Plugin.LowBatteryWarningPercentage.Value;
-        private static Color setColor = new Color((float)Plugin.colorRed.Value / 255, (float)Plugin.colorGreen.Value / 255, (float)Plugin.colorBlue.Value / 255);
         private static BatteryDisplayOptions selectedStyle;
+        private static TextDisplayOptions selectedText;
         private static float elemScale;
+        #endregion
 
         [HarmonyPatch(typeof(HUDManager), "Start")]
         [HarmonyPostfix]
         public static void GetBatteryUI(ref HUDManager __instance)
         {
             selectedStyle = Plugin.batteryDisplay.Value;
-            fadeAlpha = Plugin.UIHiddenAlpha.Value;
+            selectedText = Plugin.textDisplay.Value;
             warningEnabled = Plugin.UIDisabledLowBatteryWarning.Value;
             warningPercent = Plugin.LowBatteryWarningPercentage.Value;
             elemScale = Plugin.UIScale.Value;
 
             if (selectedStyle == BatteryDisplayOptions.Percentage)
             {
-                UIContainer = new GameObject("Local Flashlight HUD Elements");
+                UIContainer = new GameObject("LocalFlashlightHUDElements");
                 UIContainer.AddComponent<RectTransform>();
-                UIContainer.transform.localPosition = new Vector2(450, -215);
+                UIContainer.transform.localPosition = new Vector2(Plugin.UIPositionX.Value, Plugin.UIPositionY.Value);
                 UIContainer.AddComponent<CanvasGroup>();
                 UIContainer.transform.localScale = new Vector3(elemScale, elemScale, elemScale);
 
@@ -45,7 +43,7 @@ namespace localFlashlight
                 RectTransform transform = textmesh.rectTransform;
                 transform.SetParent(__instance.HUDContainer.transform, false);
                 textmesh.font = __instance.controlTipLines[0].font;
-                textmesh.color = setColor;
+                textmesh.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);;
                 textmesh.fontSize = 25;
                 textmesh.overflowMode = TextOverflowModes.Overflow;
                 textmesh.enabled = true;
@@ -56,9 +54,9 @@ namespace localFlashlight
                 frame = Plugin.bundle.LoadAsset<Sprite>("frame.png");
                 meter = Plugin.bundle.LoadAsset<Sprite>("meter.png");
 
-                UIContainer = new GameObject("Local Flashlight HUD Elements");
+                UIContainer = new GameObject("LocalFlashlightHUDElements");
                 UIContainer.transform.SetParent(__instance.HUDContainer.transform, false);
-                UIContainer.transform.localPosition = new Vector2(390, -270);
+                UIContainer.transform.localPosition = new Vector2(Plugin.UIPositionX.Value, Plugin.UIPositionY.Value);
                 UIContainer.AddComponent<CanvasGroup>();
                 UIContainer.transform.localScale = new Vector3(elemScale, elemScale, elemScale);
 
@@ -67,8 +65,8 @@ namespace localFlashlight
                 frameObj.AddComponent<RectTransform>();
                 frameImage = frameObj.AddComponent<Image>();
                 frameImage.sprite = frame;
-                frameImage.color = setColor;
-                frameObj.transform.localPosition = new Vector2(-40, 55);
+                frameImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);;
+                frameObj.transform.localPosition = Vector2.zero;
                 frameObj.transform.localScale = new Vector2(1.5f, 1.25f);
 
                 meterObj = new GameObject("Meter");
@@ -76,10 +74,10 @@ namespace localFlashlight
                 meterObj.AddComponent<RectTransform>();
                 meterImage = meterObj.AddComponent<Image>();
                 meterImage.sprite = meter;
-                meterImage.color = setColor;
+                meterImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);;
                 meterImage.type = Image.Type.Filled;
                 meterImage.fillMethod = Image.FillMethod.Horizontal;
-                meterObj.transform.localPosition = new Vector2(-40, 55);
+                meterObj.transform.localPosition = Vector2.zero;
                 meterObj.transform.localScale = new Vector2(1.5f, 1.25f);
 
                 UIContainer.SetActive(true);
@@ -91,22 +89,21 @@ namespace localFlashlight
                 frame = Plugin.bundle.LoadAsset<Sprite>("meter.png");
                 meter = Plugin.bundle.LoadAsset<Sprite>("meter.png");
 
-                UIContainer = new GameObject("Local Flashlight HUD Elements");
+                UIContainer = new GameObject("LocalFlashlightHUDElements");
                 UIContainer.transform.SetParent(__instance.HUDContainer.transform, false);
                 UIContainer.AddComponent<CanvasGroup>();
-                UIContainer.transform.localPosition = new Vector2(375, -255);
+                UIContainer.transform.localPosition = new Vector2(Plugin.UIPositionX.Value, Plugin.UIPositionY.Value);
                 UIContainer.transform.localScale = new Vector3(elemScale, elemScale, elemScale);
 
                 textObj = new GameObject("Text");
                 textObj.transform.SetParent(UIContainer.transform, false);
                 textObj.AddComponent<RectTransform>();
-                textObj.transform.localPosition = Vector2.zero;
                 textmesh = textObj.AddComponent<TextMeshProUGUI>();
                 RectTransform textTransform = textmesh.rectTransform;
                 textTransform.SetParent(textObj.transform, false);
-                textTransform.localPosition = new Vector2(-37, 45);
+                textTransform.localPosition = new Vector2(15, 0);
                 textmesh.font = __instance.controlTipLines[0].font;
-                textmesh.color = setColor;
+                textmesh.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);;
                 textmesh.fontSize = 20;
                 textmesh.overflowMode = TextOverflowModes.Overflow;
                 textmesh.enabled = true;
@@ -118,7 +115,7 @@ namespace localFlashlight
                 frameImage = frameObj.AddComponent<Image>();
                 frameImage.sprite = frame;
                 frameImage.color = new Color(0, 0, 0, 0.5f);
-                frameObj.transform.localPosition = new Vector2(-50, 45);
+                frameObj.transform.localPosition = Vector2.zero;
                 frameObj.transform.localScale = new Vector2(2.625f, 0.875f);
 
                 meterObj = new GameObject("Meter");
@@ -126,10 +123,10 @@ namespace localFlashlight
                 meterObj.AddComponent<RectTransform>();
                 meterImage = meterObj.AddComponent<Image>();
                 meterImage.sprite = meter;
-                meterImage.color = setColor;
+                meterImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);;
                 meterImage.type = Image.Type.Filled;
                 meterImage.fillMethod = Image.FillMethod.Horizontal;
-                meterObj.transform.localPosition = new Vector2(-50, 45);
+                meterObj.transform.localPosition = Vector2.zero;
                 meterObj.transform.localScale = new Vector2(2.625f, 0.875f);
             }
             if (selectedStyle == BatteryDisplayOptions.CircularBar)
@@ -137,9 +134,9 @@ namespace localFlashlight
                 frame = Plugin.bundle.LoadAsset<Sprite>("meter2.png");
                 meter = Plugin.bundle.LoadAsset<Sprite>("meter2.png");
 
-                UIContainer = new GameObject("Local Flashlight HUD Elements");
+                UIContainer = new GameObject("LocalFlashlightHUDElements");
                 UIContainer.transform.SetParent(__instance.HUDContainer.transform, false);
-                UIContainer.transform.localPosition = new Vector2(410, -250);
+                UIContainer.transform.localPosition = new Vector2(Plugin.UIPositionX.Value, Plugin.UIPositionY.Value);
                 UIContainer.AddComponent<CanvasGroup>();
                 UIContainer.transform.localScale = new Vector3(elemScale, elemScale, elemScale);
 
@@ -149,7 +146,7 @@ namespace localFlashlight
                 frameImage = frameObj.AddComponent<Image>();
                 frameImage.sprite = frame;
                 frameImage.color = new Color(0, 0, 0, 0.3f);
-                frameObj.transform.localPosition = new Vector2(-40, 55);
+                frameObj.transform.localPosition = Vector2.zero;
                 frameObj.transform.localScale = new Vector2(0.7f, 0.7f);
 
                 meterObj = new GameObject("Meter");
@@ -157,13 +154,13 @@ namespace localFlashlight
                 meterObj.AddComponent<RectTransform>();
                 meterImage = meterObj.AddComponent<Image>();
                 meterImage.sprite = meter;
-                meterImage.color = setColor;
+                meterImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);;
                 meterImage.type = Image.Type.Filled;
                 meterImage.fillMethod = Image.FillMethod.Radial360;
                 meterImage.fillClockwise = false;
                 meterImage.fillOrigin = 2;
 
-                meterObj.transform.localPosition = new Vector2(-40, 55);
+                meterObj.transform.localPosition = Vector2.zero;
                 meterObj.transform.localScale = new Vector2(0.7f, 0.7f);
 
                 UIContainer.SetActive(true);
@@ -175,9 +172,9 @@ namespace localFlashlight
                 frame = Plugin.bundle.LoadAsset<Sprite>("meter3.png");
                 meter = Plugin.bundle.LoadAsset<Sprite>("meter3.png");
 
-                UIContainer = new GameObject("Local Flashlight HUD Elements");
+                UIContainer = new GameObject("LocalFlashlightHUDElements");
                 UIContainer.transform.SetParent(__instance.HUDContainer.transform, false);
-                UIContainer.transform.localPosition = new Vector2(450, -100);
+                UIContainer.transform.localPosition = new Vector2(Plugin.UIPositionX.Value, Plugin.UIPositionY.Value);
                 UIContainer.AddComponent<CanvasGroup>();
                 UIContainer.transform.localScale = new Vector3(elemScale, elemScale, elemScale);
 
@@ -187,7 +184,7 @@ namespace localFlashlight
                 frameImage = frameObj.AddComponent<Image>();
                 frameImage.sprite = frame;
                 frameImage.color = new Color(0, 0, 0, 0.5f);
-                frameObj.transform.localPosition = new Vector2(-40, 55);
+                frameObj.transform.localPosition = Vector2.zero;
                 frameObj.transform.localScale = new Vector2(1.25f, 3f);
 
                 meterObj = new GameObject("Meter");
@@ -195,10 +192,10 @@ namespace localFlashlight
                 meterObj.AddComponent<RectTransform>();
                 meterImage = meterObj.AddComponent<Image>();
                 meterImage.sprite = meter;
-                meterImage.color = setColor;
+                meterImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);;
                 meterImage.type = Image.Type.Filled;
                 meterImage.fillMethod = Image.FillMethod.Vertical;
-                meterObj.transform.localPosition = new Vector2(-40, 55);
+                meterObj.transform.localPosition = Vector2.zero;
                 meterObj.transform.localScale = new Vector2(1.25f, 3f);
 
                 UIContainer.SetActive(true);
@@ -209,9 +206,9 @@ namespace localFlashlight
             {
                 if (warningEnabled)
                 {
-                    UIContainer = new GameObject("Local Flashlight UI Elements");
+                    UIContainer = new GameObject("LocalFlashlightHUDElement");
                     UIContainer.AddComponent<RectTransform>();
-                    UIContainer.transform.localPosition = new Vector2(350, -190);
+                    UIContainer.transform.localPosition = new Vector2(Plugin.UIPositionX.Value, Plugin.UIPositionY.Value);
                     UIContainer.transform.SetParent(__instance.HUDContainer.transform, false);
                     UIContainer.AddComponent<CanvasGroup>();
                     UIContainer.transform.localScale = new Vector3(elemScale, elemScale, elemScale);
@@ -222,7 +219,7 @@ namespace localFlashlight
                     warningObj.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
                     warningImage = warningObj.AddComponent<Image>();
                     warningImage.sprite = warning;
-                    warningImage.color = setColor;
+                    warningImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);;
 
                     UIContainer.SetActive(false);
                 }
@@ -235,9 +232,16 @@ namespace localFlashlight
         [HarmonyPostfix]
         public static void UpdateBatteryText()
         {
+            float t0 = LightScript.batteryTime;
+            float timeMinutes = Mathf.FloorToInt(t0 / 60);
+            float timeSeconds = Mathf.FloorToInt(t0 % 60);
+
             if (selectedStyle == BatteryDisplayOptions.Percentage)
             {
-                textmesh.text = LightScript.BatteryPercent.ToString() + "%";
+                if(selectedText == TextDisplayOptions.Percent) textmesh.text = LightScript.BatteryPercent.ToString() + "%";
+                if (selectedText == TextDisplayOptions.AccuratePercent) textmesh.text = LightScript.truePercentBattery.ToString("0.0") + "%";
+                if (selectedText == TextDisplayOptions.Time) textmesh.text = $"{timeMinutes:00}:{timeSeconds:00}";
+                if (selectedText == TextDisplayOptions.All) textmesh.text = LightScript.truePercentBattery.ToString("0.0") + "%" + $" | {timeMinutes:00}:{timeSeconds:00}";
 
                 if (Plugin.hideUI.Value)
                 {
@@ -248,7 +252,7 @@ namespace localFlashlight
                             HideUI();
                         }
                     }
-                    if (LightScript.publicFlashState | (LightScript.UIHideTime > 0 || LightScript.BatteryPercent < 100)) ShowUI();
+                    if (LightScript.publicFlashState | LightScript.UIHideTime > 0) ShowUI();
                 }
             }
             if (selectedStyle == BatteryDisplayOptions.Bar)
@@ -264,12 +268,16 @@ namespace localFlashlight
                             HideUI();
                         }
                     }
-                    if (LightScript.publicFlashState | (LightScript.UIHideTime > 0 || LightScript.BatteryPercent < 100)) ShowUI();
+                    if (LightScript.publicFlashState | LightScript.UIHideTime > 0) ShowUI();
                 }
             }
             if (selectedStyle == BatteryDisplayOptions.All)
             {
-                textmesh.text = LightScript.BatteryPercent.ToString() + "%";
+                if (selectedText == TextDisplayOptions.Percent) textmesh.text = LightScript.BatteryPercent.ToString() + "%";
+                if (selectedText == TextDisplayOptions.AccuratePercent) textmesh.text = LightScript.truePercentBattery.ToString("0.0") + "%";
+                if (selectedText == TextDisplayOptions.Time) textmesh.text = $"{timeMinutes:00}:{timeSeconds:00}";
+                if (selectedText == TextDisplayOptions.All) textmesh.text = LightScript.truePercentBattery.ToString("0.0") + "%" + $" | {timeMinutes:00}:{timeSeconds:00}";
+
                 meterImage.fillAmount = LightScript.BatteryClamped;
 
                 if (Plugin.hideUI.Value)
@@ -281,14 +289,14 @@ namespace localFlashlight
                             HideUI();
                         }
                     }
-                    if (LightScript.publicFlashState | (LightScript.UIHideTime > 0 || LightScript.BatteryPercent < 100)) ShowUI();
+                    if (LightScript.publicFlashState | LightScript.UIHideTime > 0) ShowUI();
                 }
             }
             if (selectedStyle == BatteryDisplayOptions.CircularBar)
             {
                 meterImage.fillAmount = LightScript.BatteryClamped;
 
-                if(LightScript.BatteryClamped >= 1)
+                if (LightScript.BatteryClamped >= 1)
                 {
                     meterImage.fillAmount = 1;
                 }
@@ -302,7 +310,7 @@ namespace localFlashlight
                             HideUI();
                         }
                     }
-                    if (LightScript.publicFlashState | (LightScript.UIHideTime > 0 || LightScript.BatteryPercent < 100)) ShowUI();
+                    if (LightScript.publicFlashState | LightScript.UIHideTime > 0) ShowUI();
                 }
             }
             if (selectedStyle == BatteryDisplayOptions.VerticalBar)
@@ -318,7 +326,7 @@ namespace localFlashlight
                             HideUI();
                         }
                     }
-                    if (LightScript.publicFlashState | (LightScript.UIHideTime > 0 || LightScript.BatteryPercent < 100)) ShowUI();
+                    if (LightScript.publicFlashState | LightScript.UIHideTime > 0) ShowUI();
                 }
             }
             if (selectedStyle == BatteryDisplayOptions.Disabled)
@@ -338,6 +346,55 @@ namespace localFlashlight
                 }
             }
 
+            //color updates!
+            if (frameObj != null && selectedStyle == BatteryDisplayOptions.Bar)
+            {
+                frameImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);
+            }
+            if (meterObj != null)
+            {
+                meterImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);
+            }
+            if (warningObj != null)
+            {
+                warningImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);
+                warningPercent = Plugin.LowBatteryWarningPercentage.Value;
+                warningEnabled = Plugin.UIDisabledLowBatteryWarning.Value;
+            }
+            if (textObj != null)
+            {
+                textmesh.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);
+            }
+
+            if(selectedStyle == BatteryDisplayOptions.All | selectedStyle == BatteryDisplayOptions.Percentage)
+            {
+                if(selectedText == TextDisplayOptions.AccuratePercent)
+                {
+                    if(LightScript.batteryTime <= 0)
+                    {
+                        textmesh.text = "0.0%";
+                    }
+                }
+                if (selectedText == TextDisplayOptions.Time)
+                {
+                    if (LightScript.batteryTime <= 0)
+                    {
+                        textmesh.text = "00:00";
+                    }
+                }
+                if (selectedText == TextDisplayOptions.All)
+                {
+                    if (LightScript.batteryTime <= 0)
+                    {
+                        textmesh.text = "0.0% | 00:00";
+                    }
+                }
+            }
+
+            UIContainer.transform.localPosition = new Vector2(Plugin.UIPositionX.Value, Plugin.UIPositionY.Value);
+            elemScale = Plugin.UIScale.Value;
+            UIContainer.transform.localScale = new Vector3(elemScale, elemScale, elemScale);
+
             //fade things
             if (fadeIn)
             {
@@ -354,12 +411,12 @@ namespace localFlashlight
 
             if (fadeOut)
             {
-                if (UIContainer.GetComponent<CanvasGroup>().alpha > fadeAlpha)
+                if (UIContainer.GetComponent<CanvasGroup>().alpha > Plugin.UIHiddenAlpha.Value)
                 {
                     UIContainer.GetComponent<CanvasGroup>().alpha -= Time.deltaTime * 4;
-                    if (UIContainer.GetComponent<CanvasGroup>().alpha <= fadeAlpha)
+                    if (UIContainer.GetComponent<CanvasGroup>().alpha <= Plugin.UIHiddenAlpha.Value)
                     {
-                        UIContainer.GetComponent<CanvasGroup>().alpha = fadeAlpha;
+                        UIContainer.GetComponent<CanvasGroup>().alpha = Plugin.UIHiddenAlpha.Value;
                         fadeOut = false;
                     }
                 }
