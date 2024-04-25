@@ -2,7 +2,6 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
-using System;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
@@ -18,43 +17,43 @@ namespace localFlashlight
         public const string NAME = "Local Flashlight";
 
         //configs...........
-        public static ConfigEntry<KeyCode> toggleKey { get; private set; }
+        public static ConfigEntry<KeyCode> ToggleKey { get; private set; }
 
-        public static ConfigEntry<float> intensity { get; private set; }
-        public static ConfigEntry<float> range { get; private set; }
-        public static ConfigEntry<float> angle { get; private set; }
+        public static ConfigEntry<float> Intensity { get; private set; }
+        public static ConfigEntry<float> Range { get; private set; }
+        public static ConfigEntry<float> Angle { get; private set; }
 
-        public static ConfigEntry<float> batteryLife { get; private set; }
-        public static ConfigEntry<float> rechargeMult { get; private set; }
-        public static ConfigEntry<float> burnOutCool { get; private set; }
-        public static ConfigEntry<bool> batteryBurnOut { get; private set; }
-        public static ConfigEntry<float> batteryCool { get; private set; }
-        public static ConfigEntry<BatteryDisplayOptions> batteryDisplay { get; private set; }
-        public static ConfigEntry<TextDisplayOptions> textDisplay { get; private set; }
+        public static ConfigEntry<float> BatteryLife { get; private set; }
+        public static ConfigEntry<float> RechargeMult { get; private set; }
+        public static ConfigEntry<float> BurnOutCool { get; private set; }
+        public static ConfigEntry<bool> BatteryBurnOut { get; private set; }
+        public static ConfigEntry<float> BatteryCool { get; private set; }
+        public static ConfigEntry<BatteryDisplayOptions> BatteryDisplay { get; private set; }
+        public static ConfigEntry<TextDisplayOptions> TextDisplay { get; private set; }
 
-        public static ConfigEntry<int> flashColorRed { get; private set; }
-        public static ConfigEntry<int> flashColorGreen { get; private set; }
-        public static ConfigEntry<int> flashColorBlue { get; private set; }
+        public static ConfigEntry<int> FlashColorRed { get; private set; }
+        public static ConfigEntry<int> FlashColorGreen { get; private set; }
+        public static ConfigEntry<int> FlashColorBlue { get; private set; }
 
         public static ConfigEntry<int> UIColorRed { get; private set; }
         public static ConfigEntry<int> UIColorGreen { get; private set; }
         public static ConfigEntry<int> UIColorBlue { get; private set; }
 
-        public static ConfigEntry<bool> hideUI { get; private set; }
-        public static ConfigEntry<float> hideUIDelay { get; private set; }
+        public static ConfigEntry<bool> HideUI { get; private set; }
+        public static ConfigEntry<float> HideUIDelay { get; private set; }
 
         public static ConfigEntry<float> UIScale { get; private set; }
         public static ConfigEntry<float> UIHiddenAlpha { get; private set; }
         public static ConfigEntry<bool> UIDisabledLowBatteryWarning { get; private set; }
         public static ConfigEntry<int> LowBatteryWarningPercentage { get; private set; }
 
-        public static ConfigEntry<float> flashVolume { get; private set; }
+        public static ConfigEntry<float> FlashVolume { get; private set; }
 
         public static ConfigEntry<float> UIPositionX { get; private set; }
-        
+
         public static ConfigEntry<float> UIPositionY { get; private set; }
 
-        public static ConfigEntry<bool> shadowsEnabled { get; private set; }
+        public static ConfigEntry<bool> ShadowsEnabled { get; private set; }
 
         public static AssetBundle bundle;
 
@@ -64,47 +63,50 @@ namespace localFlashlight
         private void Awake()
         {
             mls = Logger;
-            mls.LogInfo("Patching stuff and adding the light.....");
+
+            mls.LogInfo("preparing mod");
 
             #region Configs
-            toggleKey = Config.Bind<KeyCode>("Keybinds", "Toggle Key", KeyCode.F);
-            
-            intensity = Config.Bind<float>("Flashlight", "Light Intensity", 225, new ConfigDescription("Intensity of the flashlight", new AcceptableValueRange<float>(0, 5000)));
-            range = Config.Bind<float>("Flashlight", "Light Range", 17);
-            angle = Config.Bind<float>("Flashlight", "Light Angle", 55, "How much the light lets you see");
-            
-            batteryLife = Config.Bind<float>("Battery", "Battery Life", 8f, "The battery of the flashlight");
-            rechargeMult = Config.Bind<float>("Battery", "Recharge Multiplier", 0.75f, "The rate at which the flashlight battery recharges");
-            batteryDisplay = Config.Bind<BatteryDisplayOptions>("Indicator", "Battery Details", BatteryDisplayOptions.Percentage, "How the mod should display the battery details on the indicator");
-            
-            hideUI = Config.Bind<bool>("Indicator", "Hide Battery Indicator?", true, "Should the mod hide the indicator when the flashlight is not used?");
-            hideUIDelay = Config.Bind<float>("Indicator", "Battery Indicator Hide Delay", 1.5f);
-            
-            flashColorRed = Config.Bind<int>("Flashlight Colors", "RedColorValue", 255, new ConfigDescription("Flashlight red color value",new AcceptableValueRange<int>(0, 255)));
-            flashColorGreen = Config.Bind<int>("Flashlight Colors", "Green Color Value", 255, new ConfigDescription("Flashlight green color value", new AcceptableValueRange<int>(0, 255)));
-            flashColorBlue = Config.Bind<int>("Flashlight Colors", "Blue Color Value", 255, new ConfigDescription("Flashlight blue color value", new AcceptableValueRange<int>(0, 255)));
-            
+            ToggleKey = Config.Bind<KeyCode>("Keybinds", "Toggle Key", KeyCode.F);
+
+            Intensity = Config.Bind<float>("Flashlight", "Light Intensity", 225, new ConfigDescription("Intensity of the light", new AcceptableValueRange<float>(0, 5000)));
+            Range = Config.Bind<float>("Flashlight", "Light Range", 17);
+            Angle = Config.Bind<float>("Flashlight", "Light Angle", 55);
+
+            BatteryLife = Config.Bind<float>("Battery", "Battery Life", 8f);
+            RechargeMult = Config.Bind<float>("Battery", "Recharge Multiplier", 0.75f, "The rate at which the flashlight battery recharges");
+            BatteryDisplay = Config.Bind<BatteryDisplayOptions>("Indicator", "Battery Details", BatteryDisplayOptions.Bar, "How the mod should display the battery details on the indicator");
+
+            HideUI = Config.Bind<bool>("Indicator", "Hide Battery Indicator?", true, "Should the mod hide the battery indicator if the light is at full battery?");
+            HideUIDelay = Config.Bind<float>("Indicator", "Battery Indicator Hide Delay", 1.5f);
+
+            FlashColorRed = Config.Bind<int>("Flashlight Colors", "RedColorValue", 255, new ConfigDescription("Light red color value", new AcceptableValueRange<int>(0, 255)));
+            FlashColorGreen = Config.Bind<int>("Flashlight Colors", "Green Color Value", 255, new ConfigDescription("Light green color value", new AcceptableValueRange<int>(0, 255)));
+            FlashColorBlue = Config.Bind<int>("Flashlight Colors", "Blue Color Value", 255, new ConfigDescription("Light blue color value", new AcceptableValueRange<int>(0, 255)));
+
             UIColorRed = Config.Bind<int>("HUD Colors", "RedColorValue", 255, new ConfigDescription("HUD red color value", new AcceptableValueRange<int>(0, 255)));
-            UIColorGreen = Config.Bind<int>("HUD Colors", "GreenColorValue", 255, new ConfigDescription("HUD red color value", new AcceptableValueRange<int>(0, 255)));
-            UIColorBlue = Config.Bind<int>("HUD Colors", "BlueColorValue", 255, new ConfigDescription("HUD red color value", new AcceptableValueRange<int>(0, 255)));
-            
+            UIColorGreen = Config.Bind<int>("HUD Colors", "GreenColorValue", 255, new ConfigDescription("HUD green color value", new AcceptableValueRange<int>(0, 255)));
+            UIColorBlue = Config.Bind<int>("HUD Colors", "BlueColorValue", 255, new ConfigDescription("HUD blue color value", new AcceptableValueRange<int>(0, 255)));
+
             UIScale = Config.Bind<float>("Indicator", "Indicator Scale", 1);
-            UIHiddenAlpha = Config.Bind<float>("Indicator", "Indicator Hidden Opacity", 0.2f, new ConfigDescription("The opacity of the indicator when the flashlight is not in use for a while",new AcceptableValueRange<float>(0, 1)));
-            UIDisabledLowBatteryWarning = Config.Bind<bool>("Indicator", "Low Battery Warning Toggle", true, "Should the mod display a low battery warning when the indicator is disabled?");
+            UIHiddenAlpha = Config.Bind<float>("Indicator", "Indicator Hidden Opacity", 0.2f, new ConfigDescription("The opacity of the indicator when it is hidden", new AcceptableValueRange<float>(0, 1)));
+            UIDisabledLowBatteryWarning = Config.Bind<bool>("Indicator", "Low Battery Warning Toggle", true, "When true, shows a warning on the HUD when the battery reaches a certain percentage");
             LowBatteryWarningPercentage = Config.Bind<int>("Indicator", "Low Battery Warning Percentage", 30, new ConfigDescription("The percentage at which the low battery warning shows up", new AcceptableValueRange<int>(0, 100)));
-            textDisplay = Config.Bind<TextDisplayOptions>("Indicator", "Text display", TextDisplayOptions.Percent);
+            TextDisplay = Config.Bind<TextDisplayOptions>("Indicator", "Text display", TextDisplayOptions.Percent);
 
-            UIPositionX = Config.Bind<float>("Indicator", "IndicatorPositionX", 350, new ConfigDescription("The position of the UI on the X axis",new AcceptableValueRange<float>(-450, 450)));
+            UIPositionX = Config.Bind<float>("Indicator", "IndicatorPositionX", 350, new ConfigDescription("The position of the UI on the X axis", new AcceptableValueRange<float>(-450, 450)));
             UIPositionY = Config.Bind<float>("Indicator", "IndicatorPositionY", -150, new ConfigDescription("The position of the UI on the Y axis", new AcceptableValueRange<float>(-280, 280)));
-            
-            flashVolume = Config.Bind<float>("Other", "Volume", 0.5f, "Volume of all the flashlight sounds");
-            batteryCool = Config.Bind<float>("Battery", "Battery Recharge Cooldown", 1, "The cooldown before the battery starts recharging");
-            batteryBurnOut = Config.Bind<bool>("Battery", "Battery Burnout", true, "Should the battery take a longer time to start recharging when the flashlight has no more battery?");
-            burnOutCool = Config.Bind<float>("Battery", "Battery Recharge Cooldown (burnt out)", 3);
 
-            shadowsEnabled = Config.Bind<bool>("Other", "Enable shadows (EXPERIMENTAL)", true, "left this as an experimental feature as shadows are very buggy with the playermodel, which is also the reason why helmetlights dont work properly when looking down or crouching, so i advise not looking down when using the light unless you really need to, other than that it's all good!");
+            FlashVolume = Config.Bind<float>("Other", "Volume", 0.5f, "Volume of all flashlight sounds");
+            BatteryCool = Config.Bind<float>("Battery", "Battery Recharge Cooldown", 1, "The cooldown before the battery starts recharging");
+            BatteryBurnOut = Config.Bind<bool>("Battery", "Battery Burnout", true, "When true, if the flashlight turns off because it has no more battery, it goes on cooldown for longer");
+            BurnOutCool = Config.Bind<float>("Battery", "Battery Recharge Cooldown (burnt out)", 3);
+
+            ShadowsEnabled = Config.Bind<bool>("Other", "Enable shadows (EXPERIMENTAL)", true, "set this as an experimental feature because shadows are inconsistent, especially when they come from lights that are inside the player. this is an issue that the vanilla game also has with its helmet lights");
 
             #endregion
+
+            mls.LogInfo("set configs");
 
             //assetbundle usage
             using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("localFlashlight.bundle");
@@ -114,13 +116,15 @@ namespace localFlashlight
                 mls.LogWarning("failed to get assets, as assetbundle is null :(");
             }
 
+            mls.LogInfo("loaded assetbundle");
+
             ///detetcting scene, and adding the gameobject
             SceneManager.sceneLoaded += OnPlayingSceneLoaded;
 
             ///hud patching
             har.PatchAll(typeof(HUDPatch));
 
-            mls.LogInfo("Patched! you'll see it work in game");
+            mls.LogInfo("applied HUD patches");
         }
 
         private void OnPlayingSceneLoaded(Scene scene, LoadSceneMode loadMode)
@@ -132,7 +136,7 @@ namespace localFlashlight
                 gameObject.AddComponent<LightScript>();
                 UnityEngine.Object.DontDestroyOnLoad(gameObject);
                 gameObject.hideFlags = HideFlags.HideAndDontSave;
-                mls.LogInfo("joined game, made lightcontroller!");
+                mls.LogInfo("joined game, made lightcontroller");
             }
 
             //detect if in main menu
@@ -140,7 +144,7 @@ namespace localFlashlight
             {
                 GameObject lightController = GameObject.Find("LightController");
                 GameObject.Destroy(lightController);
-                mls.LogInfo("in main menu, destroyed lightcontroller to prevent duplicates of it!");
+                mls.LogInfo("in main menu, destroyed lightcontroller to prevent duplicates of it");
             }
         }
     }

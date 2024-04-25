@@ -80,19 +80,19 @@ namespace localFlashlight
 
                     flashState = false;
 
-                    maxBatteryTime = Plugin.batteryLife.Value;
+                    maxBatteryTime = Plugin.BatteryLife.Value;
 
                     batteryTime = maxBatteryTime;
 
-                    UIHideTime = 3f + Plugin.hideUIDelay.Value;
+                    UIHideTime = 3f + Plugin.HideUIDelay.Value;
 
-                    enabledShadows = Plugin.shadowsEnabled.Value;
+                    enabledShadows = Plugin.ShadowsEnabled.Value;
 
-                    burnOutCooldown = Plugin.burnOutCool.Value;
+                    burnOutCooldown = Plugin.BurnOutCool.Value;
 
-                    batteryCooldown = Plugin.batteryCool.Value;
+                    batteryCooldown = Plugin.BatteryCool.Value;
 
-                    batteryRegen = Plugin.rechargeMult.Value;
+                    batteryRegen = Plugin.RechargeMult.Value;
 
                     #endregion
 
@@ -117,11 +117,11 @@ namespace localFlashlight
                         locallight = lightObject.AddComponent<Light>();
                         locallight.type = LightType.Spot;
                         locallight.shape = LightShape.Cone;
-                        locallight.color = new Color((float)Plugin.flashColorRed.Value / 255, (float)Plugin.flashColorGreen.Value / 255, (float)Plugin.flashColorBlue.Value / 255);
-                        locallight.intensity = Plugin.intensity.Value;
-                        locallight.range = Plugin.range.Value;
+                        locallight.color = new Color((float)Plugin.FlashColorRed.Value / 255, (float)Plugin.FlashColorGreen.Value / 255, (float)Plugin.FlashColorBlue.Value / 255);
+                        locallight.intensity = Plugin.Intensity.Value;
+                        locallight.range = Plugin.Range.Value;
                         locallight.shadows = LightShadows.Hard;
-                        locallight.spotAngle = Plugin.angle.Value;
+                        locallight.spotAngle = Plugin.Angle.Value;
 
                         //FOR WHATEVER GOD AWFUL REASON, ADDING SHADOWS SCREWS UP THINGS WHEN YOU LOOK DOWN. DO NOT LOOK DOWN.
                         if (enabledShadows && lightObject != null)
@@ -129,13 +129,13 @@ namespace localFlashlight
                             var HDRPLight = lightObject.AddComponent<HDAdditionalLightData>();
                             HDRPLight.EnableShadows(true);
                         }
-                        else Plugin.mls.LogInfo("shadow toggle not on, didnt create shadows");
+                        else Plugin.mls.LogInfo("shadow toggle not on, skipped creating them");
 
                         //flashlight sounds (why don't i just add the audiosource to the gameobject?)
                         flashSource = lightObject.AddComponent<AudioSource>();
                         flashSource.loop = false;
                         flashSource.playOnAwake = false;
-                        flashSource.volume = Plugin.flashVolume.Value;
+                        flashSource.volume = Plugin.FlashVolume.Value;
                         flashSource.priority = 0;
 
                         if (!positioned)
@@ -148,7 +148,7 @@ namespace localFlashlight
                         locallight.enabled = false;
                         lightObject.SetActive(true);
 
-                        Plugin.mls.LogInfo("light made, note that some values can't be changed in-game so you might have to rejoin a lobby if you want to change those");
+                        Plugin.mls.LogInfo("light built, note that some values can't be updated in-game");
                         //i probably shouldn't spam logs with random values that the player probably already knows -> Plugin.mls.LogInfo($"Light has been made, unchangeable values in-game are: \nmaxBatteryTime: {maxBatteryTime}\nUIHideDelay: {UIHideTime}\nregenMultiplier: {batteryRegen}\nbattery cooldowns: {batteryCooldown}, {burnOutCooldown}\nshadows enabled: {enabledShadows}\nHUD style: {Plugin.batteryDisplay.Value}\nHUD text style: {Plugin.textDisplay.Value}\nNOTE:The values that are not listed here can be changed in-game.");
                     }
                 }
@@ -171,13 +171,13 @@ namespace localFlashlight
 
             #region Resetting values to update alongside config changes
 
-            locallight.color = new Color((float)Plugin.flashColorRed.Value / 255, (float)Plugin.flashColorGreen.Value / 255, (float)Plugin.flashColorBlue.Value / 255);
+            locallight.color = new Color((float)Plugin.FlashColorRed.Value / 255, (float)Plugin.FlashColorGreen.Value / 255, (float)Plugin.FlashColorBlue.Value / 255);
 
-            locallight.intensity = Plugin.intensity.Value;
-            locallight.range = Plugin.range.Value;
-            locallight.spotAngle = Plugin.angle.Value;
+            locallight.intensity = Plugin.Intensity.Value;
+            locallight.range = Plugin.Range.Value;
+            locallight.spotAngle = Plugin.Angle.Value;
 
-            flashSource.volume = Plugin.flashVolume.Value;
+            flashSource.volume = Plugin.FlashVolume.Value;
 
             #endregion
 
@@ -211,7 +211,7 @@ namespace localFlashlight
 
             if (BatteryPercent <= 99 | flashState)
             {
-                UIHideTime = Plugin.hideUIDelay.Value;
+                UIHideTime = Plugin.HideUIDelay.Value;
             }
             if (BatteryPercent > 99 && !flashState)
             {
@@ -233,7 +233,7 @@ namespace localFlashlight
 
             //calling toggle script
 
-            if (input.GetKeyDown(Plugin.toggleKey.Value) && !(player_controller.quickMenuManager.isMenuOpen || player_controller.isPlayerDead || player_controller.inTerminalMenu || player_controller.isTypingChat))
+            if (input.GetKeyDown(Plugin.ToggleKey.Value) && !(player_controller.quickMenuManager.isMenuOpen || player_controller.isPlayerDead || player_controller.inTerminalMenu || player_controller.isTypingChat))
             {
                 if (batteryTime > 0)
                 {
@@ -253,14 +253,14 @@ namespace localFlashlight
                 if (flashState)
                 {
                     flashSource.PlayOneShot(toggleon);
-                    Plugin.mls.LogInfo("toggled light on!");
+                    Plugin.mls.LogInfo("toggled light on");
                 }
                 else
                 {
-                    if (batteryTime <= 0 && Plugin.batteryBurnOut.Value)
+                    if (batteryTime <= 0 && Plugin.BatteryBurnOut.Value)
                     {
                         regenCool = burnOutCooldown;
-                        Plugin.mls.LogInfo("No battery, setting cooldown to the burnt out value!");
+                        Plugin.mls.LogInfo("No battery, setting cooldown to the burnt out value");
                     }
                     else
                     {
@@ -269,7 +269,7 @@ namespace localFlashlight
                     }
                     if (batteryTime <= 0) flashSource.PlayOneShot(nochargetoggle);
                     else flashSource.PlayOneShot(toggleoff);
-                    Plugin.mls.LogInfo("toggled light off!");
+                    Plugin.mls.LogInfo("toggled light off");
                 }
             }
         }

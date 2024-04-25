@@ -25,8 +25,8 @@ namespace localFlashlight
         [HarmonyPostfix]
         public static void GetBatteryUI(ref HUDManager __instance)
         {
-            selectedStyle = Plugin.batteryDisplay.Value;
-            selectedText = Plugin.textDisplay.Value;
+            selectedStyle = Plugin.BatteryDisplay.Value;
+            selectedText = Plugin.TextDisplay.Value;
             warningEnabled = Plugin.UIDisabledLowBatteryWarning.Value;
             warningPercent = Plugin.LowBatteryWarningPercentage.Value;
             elemScale = Plugin.UIScale.Value;
@@ -43,7 +43,7 @@ namespace localFlashlight
                 RectTransform transform = textmesh.rectTransform;
                 transform.SetParent(__instance.HUDContainer.transform, false);
                 textmesh.font = __instance.controlTipLines[0].font;
-                textmesh.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);;
+                textmesh.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255); ;
                 textmesh.fontSize = 25;
                 textmesh.overflowMode = TextOverflowModes.Overflow;
                 textmesh.enabled = true;
@@ -65,7 +65,7 @@ namespace localFlashlight
                 frameObj.AddComponent<RectTransform>();
                 frameImage = frameObj.AddComponent<Image>();
                 frameImage.sprite = frame;
-                frameImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);;
+                frameImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255); ;
                 frameObj.transform.localPosition = Vector2.zero;
                 frameObj.transform.localScale = new Vector2(1.5f, 1.25f);
 
@@ -74,7 +74,7 @@ namespace localFlashlight
                 meterObj.AddComponent<RectTransform>();
                 meterImage = meterObj.AddComponent<Image>();
                 meterImage.sprite = meter;
-                meterImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);;
+                meterImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255); ;
                 meterImage.type = Image.Type.Filled;
                 meterImage.fillMethod = Image.FillMethod.Horizontal;
                 meterObj.transform.localPosition = Vector2.zero;
@@ -103,7 +103,7 @@ namespace localFlashlight
                 textTransform.SetParent(textObj.transform, false);
                 textTransform.localPosition = new Vector2(15, 0);
                 textmesh.font = __instance.controlTipLines[0].font;
-                textmesh.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);;
+                textmesh.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255); ;
                 textmesh.fontSize = 20;
                 textmesh.overflowMode = TextOverflowModes.Overflow;
                 textmesh.enabled = true;
@@ -123,7 +123,7 @@ namespace localFlashlight
                 meterObj.AddComponent<RectTransform>();
                 meterImage = meterObj.AddComponent<Image>();
                 meterImage.sprite = meter;
-                meterImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);;
+                meterImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255); ;
                 meterImage.type = Image.Type.Filled;
                 meterImage.fillMethod = Image.FillMethod.Horizontal;
                 meterObj.transform.localPosition = Vector2.zero;
@@ -154,7 +154,7 @@ namespace localFlashlight
                 meterObj.AddComponent<RectTransform>();
                 meterImage = meterObj.AddComponent<Image>();
                 meterImage.sprite = meter;
-                meterImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);;
+                meterImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255); ;
                 meterImage.type = Image.Type.Filled;
                 meterImage.fillMethod = Image.FillMethod.Radial360;
                 meterImage.fillClockwise = false;
@@ -192,7 +192,7 @@ namespace localFlashlight
                 meterObj.AddComponent<RectTransform>();
                 meterImage = meterObj.AddComponent<Image>();
                 meterImage.sprite = meter;
-                meterImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);;
+                meterImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255); ;
                 meterImage.type = Image.Type.Filled;
                 meterImage.fillMethod = Image.FillMethod.Vertical;
                 meterObj.transform.localPosition = Vector2.zero;
@@ -219,7 +219,7 @@ namespace localFlashlight
                     warningObj.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
                     warningImage = warningObj.AddComponent<Image>();
                     warningImage.sprite = warning;
-                    warningImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);;
+                    warningImage.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255); ;
 
                     UIContainer.SetActive(false);
                 }
@@ -238,12 +238,12 @@ namespace localFlashlight
 
             if (selectedStyle == BatteryDisplayOptions.Percentage)
             {
-                if(selectedText == TextDisplayOptions.Percent) textmesh.text = LightScript.BatteryPercent.ToString() + "%";
+                if (selectedText == TextDisplayOptions.Percent) textmesh.text = LightScript.BatteryPercent.ToString() + "%";
                 if (selectedText == TextDisplayOptions.AccuratePercent) textmesh.text = LightScript.truePercentBattery.ToString("0.0") + "%";
-                if (selectedText == TextDisplayOptions.Time) textmesh.text = $"{timeMinutes:00}:{timeSeconds:00}";
-                if (selectedText == TextDisplayOptions.All) textmesh.text = LightScript.truePercentBattery.ToString("0.0") + "%" + $" | {timeMinutes:00}:{timeSeconds:00}";
+                if (selectedText == TextDisplayOptions.Time) textmesh.text = $"{timeMinutes:0}:{timeSeconds:00}";
+                if (selectedText == TextDisplayOptions.All) textmesh.text = LightScript.truePercentBattery.ToString("0.0") + "%" + $" | {timeMinutes:0}:{timeSeconds:00}";
 
-                if (Plugin.hideUI.Value)
+                if (Plugin.HideUI.Value)
                 {
                     if (!LightScript.publicFlashState)
                     {
@@ -259,7 +259,7 @@ namespace localFlashlight
             {
                 meterImage.fillAmount = LightScript.BatteryClamped;
 
-                if (Plugin.hideUI.Value)
+                if (Plugin.HideUI.Value)
                 {
                     if (!LightScript.publicFlashState)
                     {
@@ -275,12 +275,12 @@ namespace localFlashlight
             {
                 if (selectedText == TextDisplayOptions.Percent) textmesh.text = LightScript.BatteryPercent.ToString() + "%";
                 if (selectedText == TextDisplayOptions.AccuratePercent) textmesh.text = LightScript.truePercentBattery.ToString("0.0") + "%";
-                if (selectedText == TextDisplayOptions.Time) textmesh.text = $"{timeMinutes:00}:{timeSeconds:00}";
-                if (selectedText == TextDisplayOptions.All) textmesh.text = LightScript.truePercentBattery.ToString("0.0") + "%" + $" | {timeMinutes:00}:{timeSeconds:00}";
+                if (selectedText == TextDisplayOptions.Time) textmesh.text = $"{timeMinutes:0}:{timeSeconds:00}";
+                if (selectedText == TextDisplayOptions.All) textmesh.text = LightScript.truePercentBattery.ToString("0.0") + "%" + $" | {timeMinutes:0}:{timeSeconds:00}";
 
                 meterImage.fillAmount = LightScript.BatteryClamped;
 
-                if (Plugin.hideUI.Value)
+                if (Plugin.HideUI.Value)
                 {
                     if (!LightScript.publicFlashState)
                     {
@@ -301,7 +301,7 @@ namespace localFlashlight
                     meterImage.fillAmount = 1;
                 }
 
-                if (Plugin.hideUI.Value)
+                if (Plugin.HideUI.Value)
                 {
                     if (!LightScript.publicFlashState)
                     {
@@ -317,7 +317,7 @@ namespace localFlashlight
             {
                 meterImage.fillAmount = LightScript.BatteryClamped;
 
-                if (Plugin.hideUI.Value)
+                if (Plugin.HideUI.Value)
                 {
                     if (!LightScript.publicFlashState)
                     {
@@ -366,11 +366,11 @@ namespace localFlashlight
                 textmesh.color = new Color((float)Plugin.UIColorRed.Value / 255, (float)Plugin.UIColorGreen.Value / 255, (float)Plugin.UIColorBlue.Value / 255);
             }
 
-            if(selectedStyle == BatteryDisplayOptions.All | selectedStyle == BatteryDisplayOptions.Percentage)
+            if (selectedStyle == BatteryDisplayOptions.All | selectedStyle == BatteryDisplayOptions.Percentage)
             {
-                if(selectedText == TextDisplayOptions.AccuratePercent)
+                if (selectedText == TextDisplayOptions.AccuratePercent)
                 {
-                    if(LightScript.batteryTime <= 0)
+                    if (LightScript.batteryTime <= 0)
                     {
                         textmesh.text = "0.0%";
                     }
@@ -379,14 +379,14 @@ namespace localFlashlight
                 {
                     if (LightScript.batteryTime <= 0)
                     {
-                        textmesh.text = "00:00";
+                        textmesh.text = "0:00";
                     }
                 }
                 if (selectedText == TextDisplayOptions.All)
                 {
                     if (LightScript.batteryTime <= 0)
                     {
-                        textmesh.text = "0.0% | 00:00";
+                        textmesh.text = "0.0% | 0:00";
                     }
                 }
             }
