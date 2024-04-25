@@ -1,3 +1,9 @@
+# **V1.2.1**
+- Added LCInputUtils as dependency for easier keybind configuration
+- Added sound options (currently only two of them, Default and ActualFlashlight)
+- Updated README file to add installation and configuration, and a small note about the new keybind configurations
+- Fixed light turning off forever on death
+
 # **V1.2**
 - Added separate config options for light color and HUD color
 - Some settings can now be changed without having to rejoin a lobby (specifically the ones that aren't important, like colors or intensity)
