@@ -4,7 +4,7 @@
 - Added configs for indicator position on the screen (IndicatorPositionX and IndicatorPositionY)
 - Added config for battery text options (Percentage, AccuratePercentage, Time, All)
 - Added an experimental config to enable light shadows
-- Fixed indicator not fading out when using the flashlight at abnormally high battery times
+- Fixed indicator not fading in when using the flashlight at abnormally high battery times
 - Fixed bugs related to player death not turning off the flashlight, which resulted in battery loss when dead
 - More overall code changes
 - Added more logs in case something goes wrong
