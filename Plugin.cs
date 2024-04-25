@@ -6,18 +6,27 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
+using LethalCompanyInputUtils.Api;
 
 namespace localFlashlight
 {
+    public class ToggleButton : LcInputActions
+    {
+        [InputAction("<Keyboard>/f", Name = "LightToggle")]
+        public InputAction toggleKey { get; set; }
+    }
+
     [BepInPlugin(GUID, NAME, VERSION)]
+    [BepInDependency("com.rune580.LethalCompanyInputUtils", BepInDependency.DependencyFlags.HardDependency)]
     public class Plugin : BaseUnityPlugin
     {
-        public const string VERSION = "1.2.0";
+        public const string VERSION = "1.2.1";
         public const string GUID = "command.localFlashlight";
         public const string NAME = "Local Flashlight";
 
-        //configs...........
-        public static ConfigEntry<KeyCode> ToggleKey { get; private set; }
+        //configs..........
+
 
         public static ConfigEntry<float> Intensity { get; private set; }
         public static ConfigEntry<float> Range { get; private set; }
@@ -30,6 +39,7 @@ namespace localFlashlight
         public static ConfigEntry<float> BatteryCool { get; private set; }
         public static ConfigEntry<BatteryDisplayOptions> BatteryDisplay { get; private set; }
         public static ConfigEntry<TextDisplayOptions> TextDisplay { get; private set; }
+        public static ConfigEntry<SoundOptions> soundOption { get; private set; }
 
         public static ConfigEntry<int> FlashColorRed { get; private set; }
         public static ConfigEntry<int> FlashColorGreen { get; private set; }
@@ -59,6 +69,8 @@ namespace localFlashlight
 
         public static ManualLogSource mls { get; private set; }
 
+        internal static ToggleButton flashlightToggleInstance = new ToggleButton();
+
         private readonly Harmony har = new Harmony(GUID);
         private void Awake()
         {
@@ -67,8 +79,6 @@ namespace localFlashlight
             mls.LogInfo("preparing mod");
 
             #region Configs
-            ToggleKey = Config.Bind<KeyCode>("Keybinds", "Toggle Key", KeyCode.F);
-
             Intensity = Config.Bind<float>("Flashlight", "Light Intensity", 225, new ConfigDescription("Intensity of the light", new AcceptableValueRange<float>(0, 5000)));
             Range = Config.Bind<float>("Flashlight", "Light Range", 17);
             Angle = Config.Bind<float>("Flashlight", "Light Angle", 55);
@@ -98,6 +108,8 @@ namespace localFlashlight
             UIPositionY = Config.Bind<float>("Indicator", "IndicatorPositionY", -150, new ConfigDescription("The position of the UI on the Y axis", new AcceptableValueRange<float>(-280, 280)));
 
             FlashVolume = Config.Bind<float>("Other", "Volume", 0.5f, "Volume of all flashlight sounds");
+            soundOption = Config.Bind<SoundOptions>("Other", "Sound Options", SoundOptions.Default, "different flashlight sounds (Light on, off, or out of battery)");
+
             BatteryCool = Config.Bind<float>("Battery", "Battery Recharge Cooldown", 1, "The cooldown before the battery starts recharging");
             BatteryBurnOut = Config.Bind<bool>("Battery", "Battery Burnout", true, "When true, if the flashlight turns off because it has no more battery, it goes on cooldown for longer");
             BurnOutCool = Config.Bind<float>("Battery", "Battery Recharge Cooldown (burnt out)", 3);

@@ -16,17 +16,14 @@ namespace localFlashlight
         private GameObject player, cameraObject, lightContainer, lightObject;
 
         //audioclips and audiosource
-        public static AudioClip toggleon = Plugin.bundle.LoadAsset<AudioClip>("lighton");
-        public static AudioClip toggleoff = Plugin.bundle.LoadAsset<AudioClip>("lightoff");
-        public static AudioClip denytoggle = Plugin.bundle.LoadAsset<AudioClip>("denytoggle");
-        public static AudioClip nochargetoggle = Plugin.bundle.LoadAsset<AudioClip>("lowtoggle");
+        public static AudioClip toggleon;
+        public static AudioClip toggleoff;
+        public static AudioClip denytoggle;
+        public static AudioClip nochargetoggle;
         public AudioSource flashSource;
 
         //THE LIGHT.
         private Light locallight;
-
-        //inputs!
-        private IInputSystem input;
 
         //bool to check if light is positioned correctly so you avoid having a circle of holy light as your crosshair instead :)
         public static bool positioned = false;
@@ -55,12 +52,6 @@ namespace localFlashlight
         public static bool enabledShadows;
 
         #endregion
-
-        //only used to set the inputs
-        public void Awake()
-        {
-            input = UnityInput.Current;
-        }
 
         public void Update()
         {
@@ -94,6 +85,22 @@ namespace localFlashlight
 
                     batteryRegen = Plugin.RechargeMult.Value;
 
+                    if(Plugin.soundOption.Value == SoundOptions.Default)
+                    {
+                        toggleon = Plugin.bundle.LoadAsset<AudioClip>("lighton");
+                        toggleoff = Plugin.bundle.LoadAsset<AudioClip>("lightoff");
+                        denytoggle = Plugin.bundle.LoadAsset<AudioClip>("denytoggle");
+                        nochargetoggle = Plugin.bundle.LoadAsset<AudioClip>("lowtoggle");
+                    }
+
+                    if(Plugin.soundOption.Value == SoundOptions.ActualFlashlight)
+                    {
+                        toggleon = Plugin.bundle.LoadAsset<AudioClip>("lighton1");
+                        toggleoff = Plugin.bundle.LoadAsset<AudioClip>("lightoff1");
+                        denytoggle = Plugin.bundle.LoadAsset<AudioClip>("denytoggle");
+                        nochargetoggle = Plugin.bundle.LoadAsset<AudioClip>("lowtoggle1");
+                    }
+
                     #endregion
 
                     if (player != null)
@@ -104,15 +111,15 @@ namespace localFlashlight
 
                         cameraObject = player.transform.Find("ScavengerModel/metarig/CameraContainer/MainCamera").gameObject;
 
-                        lightContainer = new GameObject();
-                        lightContainer.transform.SetParent(cameraObject.transform, false);
+                        //lightContainer = new GameObject();
+                        //lightContainer.transform.SetParent(cameraObject.transform, false);
 
                         lightObject = new GameObject();
 
-                        lightObject.transform.SetParent(lightContainer.transform, false);
+                        lightObject.transform.SetParent(cameraObject.transform, false);
 
-                        lightContainer.name = "LightContainer";
-                        lightObject.name = "LocalLightObject";
+                        //lightContainer.name = "LightContainer";
+                        lightObject.name = "lightObject";
 
                         locallight = lightObject.AddComponent<Light>();
                         locallight.type = LightType.Spot;
@@ -233,7 +240,7 @@ namespace localFlashlight
 
             //calling toggle script
 
-            if (input.GetKeyDown(Plugin.ToggleKey.Value) && !(player_controller.quickMenuManager.isMenuOpen || player_controller.isPlayerDead || player_controller.inTerminalMenu || player_controller.isTypingChat))
+            if (Plugin.flashlightToggleInstance.toggleKey.triggered && !(player_controller.quickMenuManager.isMenuOpen || player_controller.isPlayerDead || player_controller.inTerminalMenu || player_controller.isTypingChat))
             {
                 if (batteryTime > 0)
                 {
