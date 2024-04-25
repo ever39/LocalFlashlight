@@ -43,5 +43,8 @@ The mod adds a flashlight that uses a battery system which recharges when not in
 
 ##
 
-This mod is CLIENT-SIDED, so everyone who wants to use these features must have the mod installed.
-If you found a bug, then feel free to open a new issue on [Github](https://github.com/ever39/LocalFlashlight/issues) to report it.
+>[!IMPORTANT]
+>This mod is CLIENT-SIDED, so everyone who wants to use these features must have the mod installed.
+>This also means that other players will not be able to see your light, nor you will be able to see other players' lights if they use the mod (hence the mod being called **Local**Flashlight).
+
+If you found a bug, then feel free to open a new issue on the [Github page](https://github.com/ever39/LocalFlashlight/issues) to report it.
