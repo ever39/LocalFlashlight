@@ -1,8 +1,13 @@
+# **V1.2.2**
+- Added config option to prioritize flashlights in the player's inventory until their battery is depleted
+- Added a third sound option (InGameFlashlight)
+- Added more logs
+- Changed some config descriptions to be more clear about what they do (i recommend deleting the config file as it might cause some issues if the new configs overlap the old ones)
+
 # **V1.2.1**
 - Added LCInputUtils as dependency for easier keybind configuration
 - Added sound options (currently only two of them, Default and ActualFlashlight)
 - Updated README file to add installation and configuration, and a small note about the new keybind configurations
-- Fixed light turning off forever on death
 
 # **V1.2**
 - Added separate config options for light color and HUD color
