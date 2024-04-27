@@ -8,19 +8,23 @@ The mod adds a flashlight that uses a battery system which recharges when not in
 ## Installation and configuration
 
 The mod can be installed through either Thunderstore Mod Manager or r2modman, or it can be installed manually.
-Manual installation requires installing BepInEx, then placing the mod folder inside the ```BepInEx/plugins``` folder. 
+Manual installation requires installing BepInEx, then placing the mod folder inside the ```BepInEx/plugins``` folder
 
-Configuration of the mod can be done after starting up the game with the mod enabled through the Config editor (Thunderstore Mod Manager or r2modman) or by opening the ```command.localFlashlight.cfg``` file made by the mod in the ```BepInEx/config``` folder and editing the config values
+Configuration of the mod can be done after starting up the game with the mod enabled through the Config editor (Thunderstore Mod Manager or r2modman) or by opening the ```command.localFlashlight.cfg``` file made by the mod in the in ```BepInEx/config```
 
 ## Mod configs
 
--Intensity, range and spot angle of the light can be configured.
+-Intensity, range and spot angle of the light can be configured
 
--The battery's max time and recharge multiplier can also be configured.
+-The battery's max time and recharge multiplier can also be configured
 
--The HUD has six different styles (Low battery warning, Bar, Percentage, Circular Bar, Vertical Bar, All).
+-The HUD has six different styles (Low battery warning, Bar, Percentage, Circular Bar, Vertical Bar, All)
 
--Custom colors can be set for the light and HUD.
+-Custom colors can be set for the light and HUD
+
+-The light's shadows can be enabled or disabled
+
+-Option to prioritize in-game flashlights before the local flashlight
 
 ## Indicator config styles
 
