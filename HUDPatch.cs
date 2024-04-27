@@ -1,4 +1,6 @@
-﻿using HarmonyLib;
+﻿using GameNetcodeStuff;
+using HarmonyLib;
+using System.Security.Policy;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +21,8 @@ namespace localFlashlight
         private static BatteryDisplayOptions selectedStyle;
         private static TextDisplayOptions selectedText;
         private static float elemScale;
+        public static bool isFlashlightHeld = false;
+        public static bool isFlashlightPocketed = false;
         #endregion
 
         [HarmonyPatch(typeof(HUDManager), "Start")]
@@ -335,11 +339,11 @@ namespace localFlashlight
 
                 if (warningEnabled)
                 {
-                    if (LightScript.BatteryPercent < warningPercent)
+                    if (LightScript.truePercentBattery < warningPercent)
                     {
                         UIContainer.SetActive(true);
                     }
-                    if (LightScript.BatteryPercent > warningPercent)
+                    if (LightScript.truePercentBattery > warningPercent)
                     {
                         UIContainer.SetActive(false);
                     }
@@ -421,6 +425,47 @@ namespace localFlashlight
                     }
                 }
             }
+        }
+
+        [HarmonyPatch(typeof(PlayerControllerB), "LateUpdate")]
+        [HarmonyPostfix]
+        public static void CheckIfHoldingLight(ref PlayerControllerB __instance)
+        {
+            try
+            {
+                if (__instance.IsOwner && (!__instance.IsServer || __instance.isHostPlayerObject) && __instance.isPlayerControlled && !__instance.isPlayerDead && !__instance.isTestingPlayer)
+                {
+                    if(__instance.currentlyHeldObjectServer is FlashlightItem && __instance.currentlyHeldObjectServer != __instance.pocketedFlashlight)
+                    {
+                        __instance.pocketedFlashlight = __instance.currentlyHeldObjectServer;
+                    }
+
+                    if (__instance.pocketedFlashlight == null) return;
+
+                    if (__instance.currentlyHeldObjectServer is FlashlightItem && __instance.isHoldingObject && !__instance.pocketedFlashlight.insertedBattery.empty)
+                    {
+                        isFlashlightHeld = true;
+                    }
+                    else isFlashlightHeld = false;
+
+                    if (__instance.pocketedFlashlight is FlashlightItem && __instance.pocketedFlashlight.isHeld && !__instance.pocketedFlashlight.insertedBattery.empty)
+                    {
+                        isFlashlightPocketed = true;
+                    }
+                    else isFlashlightPocketed = false;
+                }
+            }
+            catch
+            {
+                return;
+            }
+        }
+
+        [HarmonyPatch(typeof(PlayerControllerB), "KillPlayer")]
+        [HarmonyPostfix]
+        public static void ClearLight(ref PlayerControllerB __instance)
+        {
+            __instance.pocketedFlashlight = null;
         }
 
 

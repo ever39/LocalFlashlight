@@ -20,4 +20,5 @@ public enum SoundOptions
 {
     Default,
     ActualFlashlight,
+    InGameFlashlight
 }

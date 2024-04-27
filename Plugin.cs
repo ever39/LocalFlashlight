@@ -13,7 +13,7 @@ namespace localFlashlight
 {
     public class ToggleButton : LcInputActions
     {
-        [InputAction("<Keyboard>/f", Name = "LightToggle")]
+        [InputAction("<Keyboard>/f", Name = "Light Toggle")]
         public InputAction toggleKey { get; set; }
     }
 
@@ -21,9 +21,9 @@ namespace localFlashlight
     [BepInDependency("com.rune580.LethalCompanyInputUtils", BepInDependency.DependencyFlags.HardDependency)]
     public class Plugin : BaseUnityPlugin
     {
-        public const string VERSION = "1.2.1";
+        public const string VERSION = "1.2.2";
         public const string GUID = "command.localFlashlight";
-        public const string NAME = "Local Flashlight";
+        public const string NAME = "LocalFlashlight";
 
         //configs..........
 
@@ -64,6 +64,7 @@ namespace localFlashlight
         public static ConfigEntry<float> UIPositionY { get; private set; }
 
         public static ConfigEntry<bool> ShadowsEnabled { get; private set; }
+        public static ConfigEntry<bool> flashlightToggleModSynergyquestionmark { get; private set; }
 
         public static AssetBundle bundle;
 
@@ -79,12 +80,12 @@ namespace localFlashlight
             mls.LogInfo("preparing mod");
 
             #region Configs
-            Intensity = Config.Bind<float>("Flashlight", "Light Intensity", 225, new ConfigDescription("Intensity of the light", new AcceptableValueRange<float>(0, 5000)));
+            Intensity = Config.Bind<float>("Flashlight", "Light Intensity", 350, new ConfigDescription("Intensity of the light", new AcceptableValueRange<float>(0, 5000)));
             Range = Config.Bind<float>("Flashlight", "Light Range", 17);
             Angle = Config.Bind<float>("Flashlight", "Light Angle", 55);
 
-            BatteryLife = Config.Bind<float>("Battery", "Battery Life", 8f);
-            RechargeMult = Config.Bind<float>("Battery", "Recharge Multiplier", 0.75f, "The rate at which the flashlight battery recharges");
+            BatteryLife = Config.Bind<float>("Battery", "Battery Life", 12f);
+            RechargeMult = Config.Bind<float>("Battery", "Recharge Multiplier", 0.8f, "The rate at which the flashlight battery recharges");
             BatteryDisplay = Config.Bind<BatteryDisplayOptions>("Indicator", "Battery Details", BatteryDisplayOptions.Bar, "How the mod should display the battery details on the indicator");
 
             HideUI = Config.Bind<bool>("Indicator", "Hide Battery Indicator?", true, "Should the mod hide the battery indicator if the light is at full battery?");
@@ -111,11 +112,11 @@ namespace localFlashlight
             soundOption = Config.Bind<SoundOptions>("Other", "Sound Options", SoundOptions.Default, "different flashlight sounds (Light on, off, or out of battery)");
 
             BatteryCool = Config.Bind<float>("Battery", "Battery Recharge Cooldown", 1, "The cooldown before the battery starts recharging");
-            BatteryBurnOut = Config.Bind<bool>("Battery", "Battery Burnout", true, "When true, if the flashlight turns off because it has no more battery, it goes on cooldown for longer");
+            BatteryBurnOut = Config.Bind<bool>("Battery", "Battery Burnout", true, "When true, if the flashlight turns off with no more battery, it goes on cooldown for a longer time");
             BurnOutCool = Config.Bind<float>("Battery", "Battery Recharge Cooldown (burnt out)", 3);
 
-            ShadowsEnabled = Config.Bind<bool>("Other", "Enable shadows (EXPERIMENTAL)", true, "set this as an experimental feature because shadows are inconsistent, especially when they come from lights that are inside the player. this is an issue that the vanilla game also has with its helmet lights");
-
+            ShadowsEnabled = Config.Bind<bool>("Other", "(EXPERIMENTAL) Enable shadows", true, "set this as an experimental feature because shadows are inconsistent, especially when they come from lights that are inside the player. this is an issue that the vanilla game also has with its helmet lights");
+            flashlightToggleModSynergyquestionmark = Config.Bind<bool>("Other", "Prioritize flashlights in inventory", true, "Setting this to true will prevent the light turning on while you have a flashlight in your inventory");
             #endregion
 
             mls.LogInfo("set configs");
