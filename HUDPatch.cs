@@ -433,6 +433,13 @@ namespace localFlashlight
         {
             try
             {
+                if (__instance.isPlayerDead)
+                {
+                    __instance.pocketedFlashlight = null;
+                    isFlashlightHeld = false;
+                    isFlashlightPocketed = false;
+                }
+
                 if (__instance.IsOwner && (!__instance.IsServer || __instance.isHostPlayerObject) && __instance.isPlayerControlled && !__instance.isPlayerDead && !__instance.isTestingPlayer)
                 {
                     if(__instance.currentlyHeldObjectServer is FlashlightItem && __instance.currentlyHeldObjectServer != __instance.pocketedFlashlight)

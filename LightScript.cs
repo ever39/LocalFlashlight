@@ -13,13 +13,14 @@ namespace localFlashlight
         private PlayerControllerB player_controller;
 
         //the gameobjects used
-        private GameObject player, cameraObject, helmetLights, lightObject;
+        private GameObject player, cameraObject, lightObject;
 
         //audioclips and audiosource
         public static AudioClip toggleon;
         public static AudioClip toggleoff;
         public static AudioClip denytoggle;
         public static AudioClip nochargetoggle;
+        public static AudioClip changepos;
         public AudioSource flashSource;
 
         //THE LIGHT.
@@ -74,11 +75,16 @@ namespace localFlashlight
 
                     Plugin.mls.LogInfo("Found player gameobject, setting values...");
 
-                    #region setting values on the singular frame where the mod tries to find the player
+                    //there's one frame where the mod tries to find the player gameobject, so that's the frame where every value gets set back to config values / default values
+                    #region Setting values
 
                     positioned = false;
 
                     flashState = false;
+
+                    isHoldingFlashlight = false;
+                    canToggle = true;
+                    isAFlashlightPocketed = false;
 
                     maxBatteryTime = Plugin.BatteryLife.Value;
                     batteryTime = maxBatteryTime;
@@ -92,6 +98,8 @@ namespace localFlashlight
 
                     selectedSoundOption = Plugin.soundOption.Value;
 
+                    //handles changing sounds depending on the soundoption
+                    changepos = Plugin.bundle.LoadAsset<AudioClip>("changepos.ogg");
                     if(selectedSoundOption == SoundOptions.Default)
                     {
                         toggleon = Plugin.bundle.LoadAsset<AudioClip>("lighton");
@@ -162,8 +170,8 @@ namespace localFlashlight
 
                         if (!positioned)
                         {
-                            lightObject.transform.localPosition = new Vector3(0, -0.55f, 0.5f);
-                            lightObject.transform.Rotate(new Vector3(-12, 0, 0));
+                            lightObject.transform.localPosition = new Vector3(0f, -0.55f, 0.5f);
+                            lightObject.transform.Rotate(new Vector3(-10, 0, 0));
                             positioned = true;
                             Plugin.mls.LogInfo("finished positioning light");
                         }
@@ -189,9 +197,10 @@ namespace localFlashlight
                 locallight.enabled = false;
                 batteryTime = maxBatteryTime;
                 regenCool = 0;
+                canToggle = true;
             }
 
-            //handles the "toggle if holding flashlight" config
+            //handles the "prioritize in-game flashlights" config
             if (Plugin.flashlightToggleModSynergyquestionmark.Value)
             {
                 if (player_controller.helmetLight.enabled)
@@ -241,7 +250,7 @@ namespace localFlashlight
 
             #region Previously in LateUpdate, now in Update. Still used for battery management.
 
-            ///handling battery regen!
+            ///handling battery regen
             if (!flashState)
             {
                 if (batteryTime <= maxBatteryTime - 0.001)

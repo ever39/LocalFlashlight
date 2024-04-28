@@ -21,7 +21,7 @@ namespace localFlashlight
     [BepInDependency("com.rune580.LethalCompanyInputUtils", BepInDependency.DependencyFlags.HardDependency)]
     public class Plugin : BaseUnityPlugin
     {
-        public const string VERSION = "1.2.2";
+        public const string VERSION = "1.2.21";
         public const string GUID = "command.localFlashlight";
         public const string NAME = "LocalFlashlight";
 
