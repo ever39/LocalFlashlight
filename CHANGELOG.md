@@ -1,3 +1,7 @@
+# **V1.2.21**
+- Fixed light not turning on anymore (with the "Prioritize in-game flashlights" config set to true) if the player dies until they pick up and drop another flashlight
+- Changed some position and rotation values of the light
+
 # **V1.2.2**
 - Added config option to prioritize flashlights in the player's inventory until their battery is depleted
 - Added a third sound option (InGameFlashlight)
