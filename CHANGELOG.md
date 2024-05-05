@@ -9,6 +9,8 @@
 - Made ```InGameFlashlight``` the default sound option for the mod to use
 - Made configs look cleaner (at least when looking at them with LethalConfig)
 - Changed some names for the sound options
+- Added keybind to change light position from left to right, and vice versa to prevent the light from being covered by any items currently held (default key: H)
+- Added keybind to recharge the flashlight (used for Shake and Dynamo recharge methods) (default key: Q)
 
 # **V1.2.21**
 - Fixed light not turning on anymore (with the "Prioritize in-game flashlights" config set to true) if the player dies until they pick up and drop another flashlight
