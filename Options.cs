@@ -1,8 +1,8 @@
 ﻿public enum BatteryDisplayOptions
 {
     Disabled,
-    Percentage,
     Bar,
+    Percentage,
     VerticalBar,
     CircularBar,
     All
@@ -18,7 +18,16 @@ public enum TextDisplayOptions
 
 public enum SoundOptions
 {
-    Default,
-    ActualFlashlight,
-    InGameFlashlight
+    OriginalLightSounds,
+    InGameFlashlight,
+    OtherwordlyLight
+}
+
+public enum RechargeOptions
+{
+    Time,
+    Shake,
+    Dynamo,
+    OnShipEnter,
+    Apparatice
 }

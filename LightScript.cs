@@ -1,7 +1,7 @@
-﻿using BepInEx;
-using GameNetcodeStuff;
+﻿using GameNetcodeStuff;
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering.HighDefinition;
 
 namespace localFlashlight
@@ -13,21 +13,17 @@ namespace localFlashlight
         private PlayerControllerB player_controller;
 
         //the gameobjects used
-        private GameObject player, cameraObject, lightObject;
+        private GameObject player, cameraObject;
+        private static GameObject lightObject;
 
         //audioclips and audiosource
-        public static AudioClip toggleon;
-        public static AudioClip toggleoff;
-        public static AudioClip denytoggle;
-        public static AudioClip nochargetoggle;
-        public static AudioClip changepos;
-        public AudioSource flashSource;
+        private AudioClip toggleon, toggleoff, denytoggle, nochargetoggle, changepos, reloadLight, useDynamo;
+        public static AudioClip fullCharge;
+        public static AudioClip flashDown;
+        private static AudioSource flashSource;
 
         //THE LIGHT.
         private Light locallight;
-
-        //bool to check if light is positioned correctly so you avoid having a circle of holy light as your crosshair instead :)
-        public static bool positioned = false;
 
         //flashlight state
         private bool flashState;
@@ -36,6 +32,7 @@ namespace localFlashlight
         //battery configs
         public static float maxBatteryTime;
         public static float batteryTime = maxBatteryTime;
+
         private float batteryRegen;
         private float regenCool;
         private float batteryCooldown;
@@ -46,98 +43,65 @@ namespace localFlashlight
         public static float truePercentBattery;
         public static float BatteryClamped;
 
+        //other wacky values
+        private float shakeCool;
+        private float lastShakeTime = 0;
+        private bool rechargeKeyHeld;
+        private float soundCool;
+        public static bool isLightLoaded = false;
+        private bool hasShownError = false;
+
         //ui hide delay
         public static float UIHideTime;
 
         //shadow toggle
-        public static bool enabledShadows;
+        private bool enabledShadows;
 
-        private static bool canToggle = true;
-        private static bool isHoldingFlashlight = false;
-        private static bool isAFlashlightPocketed = false;
+        //flashlight checks
+        private bool canToggle = true;
 
-        private static SoundOptions selectedSoundOption;
+        //selected sound, selected recharge, maybe selected HUD too sooner or later lmao
+        private SoundOptions selectedSoundOption;
+        private RechargeOptions selectedRechargeOption;
 
+        //for dynamo flashlight
+        private float playerMovementSpeed;
         #endregion
 
+        private void Start()
+        {
+            Plugin.mls.LogInfo("LocalFlashlight mod script started!");
+            isLightLoaded = false;
+            hasShownError = false;
+        }
+
+        #region Update void
         public void Update()
         {
+            #region Making gameobjects.
             try
             {
                 if (player == null)
                 {
-
-                    ///try to find local player gameobject, and if its found then proceed to the very important code
+                    //try to find local player gameobject, and if its found then proceed to the base flashlight code
                     player = GameNetworkManager.Instance.localPlayerController.gameObject;
-
-                    //getting the SFX audiomixergroup
-                    var mixerGroup = GameNetworkManager.Instance.localPlayerController.itemAudio.GetComponent<AudioSource>().outputAudioMixerGroup;
-
-                    Plugin.mls.LogInfo("Found player gameobject, setting values...");
-
-                    //there's one frame where the mod tries to find the player gameobject, so that's the frame where every value gets set back to config values / default values
-                    #region Setting values
-
-                    positioned = false;
-
-                    flashState = false;
-
-                    isHoldingFlashlight = false;
-                    canToggle = true;
-                    isAFlashlightPocketed = false;
-
-                    maxBatteryTime = Plugin.BatteryLife.Value;
-                    batteryTime = maxBatteryTime;
-                    burnOutCooldown = Plugin.BurnOutCool.Value;
-                    batteryCooldown = Plugin.BatteryCool.Value;
-                    batteryRegen = Plugin.RechargeMult.Value;
-
-                    UIHideTime = 3f + Plugin.HideUIDelay.Value;
-
-                    enabledShadows = Plugin.ShadowsEnabled.Value;
-
-                    selectedSoundOption = Plugin.soundOption.Value;
-
-                    //handles changing sounds depending on the soundoption
-                    changepos = Plugin.bundle.LoadAsset<AudioClip>("changepos.ogg");
-                    if(selectedSoundOption == SoundOptions.Default)
-                    {
-                        toggleon = Plugin.bundle.LoadAsset<AudioClip>("lighton");
-                        toggleoff = Plugin.bundle.LoadAsset<AudioClip>("lightoff");
-                        denytoggle = Plugin.bundle.LoadAsset<AudioClip>("denytoggle");
-                        nochargetoggle = Plugin.bundle.LoadAsset<AudioClip>("lowtoggle");
-                    }
-
-                    if(selectedSoundOption == SoundOptions.ActualFlashlight)
-                    {
-                        toggleon = Plugin.bundle.LoadAsset<AudioClip>("lighton1");
-                        toggleoff = Plugin.bundle.LoadAsset<AudioClip>("lighton1");
-                        denytoggle = Plugin.bundle.LoadAsset<AudioClip>("denytoggle");
-                        nochargetoggle = Plugin.bundle.LoadAsset<AudioClip>("lowtoggle1");
-                    }
-                    
-                    if(selectedSoundOption == SoundOptions.InGameFlashlight)
-                    {
-                        toggleon = Plugin.bundle.LoadAsset<AudioClip>("lighton2");
-                        toggleoff = Plugin.bundle.LoadAsset<AudioClip>("lighton2");
-                        denytoggle = Plugin.bundle.LoadAsset<AudioClip>("denytoggle");
-                        nochargetoggle = Plugin.bundle.LoadAsset<AudioClip>("lowtoggle1");
-                    }
-
-                    #endregion
 
                     if (player != null)
                     {
-                        ///very important code, base of the entire flashlight
-
                         player_controller = player.GetComponent<PlayerControllerB>();
 
-                        cameraObject = player.transform.Find("ScavengerModel/metarig/CameraContainer/MainCamera").gameObject;
+                        cameraObject = player_controller.gameplayCamera.gameObject;
+
+                        //getting the SFX audiomixergroup
+                        var mixerGroup = GameNetworkManager.Instance.localPlayerController.itemAudio.GetComponent<AudioSource>().outputAudioMixerGroup;
+
+                        Plugin.mls.LogDebug("found player gameobject, setting values and sounds");
+
+                        SetFlashlightSounds();
+                        SetModValues();
 
                         lightObject = new GameObject();
-
                         lightObject.transform.SetParent(cameraObject.transform, false);
-
                         lightObject.name = "lightObject";
 
                         locallight = lightObject.AddComponent<Light>();
@@ -149,181 +113,225 @@ namespace localFlashlight
                         locallight.shadows = LightShadows.Hard;
                         locallight.spotAngle = Plugin.Angle.Value;
 
-                        //handles shadows, they're pretty buggy though
-
-                        if (enabledShadows && lightObject != null)
-                        {
-                            var HDRPLight = lightObject.AddComponent<HDAdditionalLightData>();
-                            HDRPLight.EnableShadows(true);
-                        }
-                        else Plugin.mls.LogInfo("shadows not enabled, skipped creating them");
-
-
-                        //flashlight sounds (now added to the lightobject instead of a separate soundobject, also works with the master audiomixergroup now!)
-
+                        //flashlight sounds
                         flashSource = lightObject.AddComponent<AudioSource>();
                         flashSource.loop = false;
                         flashSource.playOnAwake = false;
                         flashSource.volume = Plugin.FlashVolume.Value;
                         flashSource.priority = 0;
+                        flashSource.spatialize = true;
                         flashSource.outputAudioMixerGroup = mixerGroup;
+                        flashSource.spatialize = true;
 
-                        if (!positioned)
+                        lightObject.transform.localPosition = new Vector3(-0.15f, -0.55f, 0.5f);
+                        lightObject.transform.Rotate(new Vector3(-12, 3, 0));
+                        Plugin.mls.LogDebug("finished positioning light");
+
+                        //handles shadows, they're pretty buggy though
+                        if (enabledShadows && lightObject != null)
                         {
-                            lightObject.transform.localPosition = new Vector3(0f, -0.55f, 0.5f);
-                            lightObject.transform.Rotate(new Vector3(-10, 0, 0));
-                            positioned = true;
-                            Plugin.mls.LogInfo("finished positioning light");
+                            var HDRPLight = lightObject.AddComponent<HDAdditionalLightData>();
+                            HDRPLight.EnableShadows(true);
                         }
+                        else Plugin.mls.LogDebug("shadows not enabled, skipped creating them");
 
                         locallight.enabled = false;
                         lightObject.SetActive(true);
 
-                        Plugin.mls.LogInfo("light built, note that some values can't be updated in-game");
+                        Plugin.mls.LogInfo("light up and working! right from the company");
+                        isLightLoaded = true;
                     }
                 }
             }
             //used for catching errors and logging them :)
             catch (Exception e)
             {
-                Plugin.mls.LogError($"if you see this, please report it to me on github with a screenshot of the error shown thank you\n{e}");
+                if (!hasShownError)
+                {
+                    Plugin.mls.LogError($"big horrible error popped up in the mod, so i'm going to make the text as big as possible so it's eyecatching as it only shows up once\n as far as i'm concerned, this only ever pops up if you have the \"foggy screen\"\n alternatively, there could be some other mods changing how the local player works, which may lead to this mod not working at all\n HOWEVER if it isn't from another mod, then do report the issue on the mod's github page (alongside a screenshot and probably the modlist you're using)\n thanks, and sorry for the big error text\n{e}");
+                    hasShownError = true;
+                }
                 return;
             }
+            #endregion
 
-            //handles death
-            if (player_controller.isPlayerDead)
+            if (player == null | player_controller == null | cameraObject == null | lightObject == null)
+                return;
+            try
             {
-                flashState = false;
-                locallight.enabled = false;
-                batteryTime = maxBatteryTime;
-                regenCool = 0;
-                canToggle = true;
-            }
-
-            //handles the "prioritize in-game flashlights" config
-            if (Plugin.flashlightToggleModSynergyquestionmark.Value)
-            {
-                if (player_controller.helmetLight.enabled)
+                #region "Prioritize in-game flashlights" config
+                if (Plugin.flashlightToggleModSynergyquestionmark.Value)
                 {
-                    canToggle = false;
+                    if (player_controller.helmetLight.enabled | Patches.isFlashlightPocketed | Patches.isFlashlightHeld)
+                    {
+                        canToggle = false;
+                    }
+                    else canToggle = true;
                 }
-                if (!player_controller.helmetLight.enabled)
+                else
                 {
                     canToggle = true;
                 }
+                #endregion
 
-                if (HUDPatch.isFlashlightPocketed)
+                #region Battery management.
+                ///handling battery regen (TIME RECHARGE CONFIG)
+                if (!flashState)
                 {
-                    isAFlashlightPocketed = true;
-                }
-                if (!HUDPatch.isFlashlightPocketed)
-                {
-                    isAFlashlightPocketed = false;
-                }
-
-                if(!HUDPatch.isFlashlightHeld)
-                { 
-                    isHoldingFlashlight = false;
-                }
-                if (HUDPatch.isFlashlightHeld)
-                {
-                    isHoldingFlashlight = true;
-                }
-            }
-            else
-            {
-                canToggle = true;
-                isHoldingFlashlight = false;
-                isAFlashlightPocketed = false;
-            }
-
-            #region Resetting values to update alongside config changes
-
-            locallight.color = new Color((float)Plugin.FlashColorRed.Value / 255, (float)Plugin.FlashColorGreen.Value / 255, (float)Plugin.FlashColorBlue.Value / 255);
-
-            locallight.range = Plugin.Range.Value;
-            locallight.spotAngle = Plugin.Angle.Value;
-
-            flashSource.volume = Plugin.FlashVolume.Value;
-
-            #endregion
-
-            #region Previously in LateUpdate, now in Update. Still used for battery management.
-
-            ///handling battery regen
-            if (!flashState)
-            {
-                if (batteryTime <= maxBatteryTime - 0.001)
-                {
-                    if (regenCool < 0) batteryTime += batteryRegen * Time.deltaTime;
-                }
-
-                if (batteryTime >= maxBatteryTime)
-                {
-                    batteryTime = maxBatteryTime;
-                }
-            }
-
-            ///handles toggling the flashlight back off when it is under 0
-            if (flashState)
-            {
-                batteryTime -= Time.deltaTime;
-                if (batteryTime < 0)
-                {
-                    Toggle();
-                }
-            }
-
-            //handles hiding UI when the flashlight is not in use
-
-            if (BatteryPercent <= 99 | flashState)
-            {
-                UIHideTime = Plugin.HideUIDelay.Value;
-            }
-            if (BatteryPercent > 99 && !flashState)
-            {
-                UIHideTime -= Time.deltaTime;
-            }
-
-            //updating values
-
-            publicFlashState = flashState;
-
-            regenCool -= Time.deltaTime;
-
-            BatteryPercent = (int)(Math.Ceiling(batteryTime / maxBatteryTime * 100));
-
-            BatteryClamped = batteryTime / maxBatteryTime;
-
-            truePercentBattery = BatteryClamped * 100;
-            #endregion
-
-            //calling toggle void, added some checks in case you do have the other experimental option enabled
-
-            if (Plugin.flashlightToggleInstance.toggleKey.triggered && !(player_controller.quickMenuManager.isMenuOpen || player_controller.isPlayerDead || player_controller.inTerminalMenu || player_controller.isTypingChat))
-            {
-                if (batteryTime > 0)
-                {
-                    if (flashState) Toggle();
-                    else if (!flashState && canToggle && !(isHoldingFlashlight || isAFlashlightPocketed)) Toggle();
-                    else
+                    if (selectedRechargeOption == RechargeOptions.Time)
                     {
-                        if (isHoldingFlashlight)
+                        if (batteryTime <= maxBatteryTime - 0.001)
                         {
-                            flashSource.PlayOneShot(denytoggle);
+                            if (regenCool < 0) batteryTime += batteryRegen * Time.deltaTime;
                         }
-                        Plugin.mls.LogInfo("a flashlight is already held, and the config is enabled! not toggling on.");
                     }
                 }
-                else 
+
+                ///this works the same
+                if (batteryTime > maxBatteryTime)
                 {
-                    flashSource.PlayOneShot(denytoggle);
+                    batteryTime = maxBatteryTime;
+                    if (selectedRechargeOption == RechargeOptions.Time) PlayNoise(fullCharge, .9f);
                 }
+
+                ///handles consuming battery and turning the light off when under 0%
+                if (flashState)
+                {
+                    batteryTime -= Time.deltaTime;
+
+                    if (batteryTime < 0)
+                    {
+                        Toggle();
+                    }
+                }
+
+                ///handles battery regen (SHAKE RECHARGE CONFIG)
+                if (selectedRechargeOption == RechargeOptions.Shake)
+                {
+                    if (Plugin.flashlightToggleInstance.rechargeKey.triggered && Time.time - lastShakeTime > shakeCool && !(player_controller.quickMenuManager.isMenuOpen || player_controller.isPlayerDead || player_controller.inTerminalMenu || player_controller.isTypingChat))
+                    {
+                        if (player_controller.sprintMeter > 0.25f)
+                        {
+                            batteryTime += (maxBatteryTime * 0.07f) * batteryRegen;
+                            PlayNoise(reloadLight, .5f);
+                            player_controller.sprintMeter -= ((float)Plugin.shakeStaminaConsume.Value) / 100;
+                            lastShakeTime = Time.time;
+                        }
+                        else PlayNoise(denytoggle, .7f);
+                    }
+                }
+
+                ///handles battery regen (DYNAMO RECHARGE CONFIG)
+                if (selectedRechargeOption == RechargeOptions.Dynamo)
+                {
+                    if (!(player_controller.quickMenuManager.isMenuOpen || player_controller.isPlayerDead || player_controller.inTerminalMenu || player_controller.isTypingChat))
+                    {
+                        Plugin.flashlightToggleInstance.rechargeKey.performed += holdCallback;
+                        Plugin.flashlightToggleInstance.rechargeKey.canceled += releaseCallback;
+                    }
+                    else
+                    {
+                        Plugin.flashlightToggleInstance.rechargeKey.performed -= holdCallback;
+                        Plugin.flashlightToggleInstance.rechargeKey.canceled -= releaseCallback;
+                    }
+
+                    if (rechargeKeyHeld)
+                    {
+                        WindUpFlashlight();
+                    }
+                    else
+                    {
+                        player_controller.movementSpeed = playerMovementSpeed;
+                    }
+                }
+                else
+                {
+                    Plugin.flashlightToggleInstance.rechargeKey.performed -= holdCallback;
+                    Plugin.flashlightToggleInstance.rechargeKey.canceled -= releaseCallback;
+                }
+
+                ///handles THE ENTIRE battery system, at the cost of the flashlight's precious light intensity!! (APPARATUS RECHARGE CONFIG)
+                if (selectedRechargeOption == RechargeOptions.Apparatice)
+                {
+                    locallight.intensity = Plugin.Intensity.Value * Plugin.apparaticeFlashlightIntensityMult.Value;
+
+                    if (!Patches.isAppTaken)
+                    {
+                        batteryTime = maxBatteryTime;
+                    }
+                    else if (Patches.isAppTaken)
+                    {
+                        if (flashState)
+                        {
+                            batteryTime -= Time.deltaTime * 0.7f;
+                        }
+                    }
+                }
+
+                if (selectedRechargeOption == RechargeOptions.OnShipEnter)
+                {
+                    if (player_controller.isInHangarShipRoom)
+                    {
+                        batteryTime = maxBatteryTime;
+                    }
+                }
+                #endregion
+
+                //handles hiding UI when the flashlight is not in use
+                if (BatteryPercent <= 99.5 | flashState)
+                {
+                    UIHideTime = Plugin.HideUIDelay.Value;
+                }
+                if (BatteryPercent > 99.5 && !flashState)
+                {
+                    UIHideTime -= Time.deltaTime;
+                }
+
+                UpdateModValues();
+
+                #region Toggling and changing light position
+                //calling toggle void, added some checks in case you do have the flashlight toggle "synergy" config enabled
+                if (Plugin.flashlightToggleInstance.toggleKey.triggered && !(player_controller.quickMenuManager.isMenuOpen || player_controller.isPlayerDead || player_controller.inTerminalMenu || player_controller.isTypingChat))
+                {
+                    if (batteryTime > 0)
+                    {
+                        if (flashState) Toggle();
+                        else if (!flashState && canToggle) Toggle();
+                        else
+                        {
+                            if (Patches.isFlashlightHeld)
+                            {
+                                PlayNoise(denytoggle, 0.7f);
+                            }
+                            Plugin.mls.LogDebug("a flashlight is already in the inventory, and the config is enabled! not toggling on.");
+                        }
+                    }
+                    else
+                    {
+                        PlayNoise(denytoggle, 0.7f);
+                    }
+                }
+
+                //handles changing flash position
+                if (Plugin.flashlightToggleInstance.switchLightPosKey.triggered && flashState && !(player_controller.quickMenuManager.isMenuOpen || player_controller.isPlayerDead || player_controller.inTerminalMenu || player_controller.isTypingChat))
+                {
+                    if (player_controller.quickMenuManager.isMenuOpen | player_controller.isPlayerDead | player_controller.inTerminalMenu | player_controller.isTypingChat)
+                        return;
+
+                    ChangeLightPosition();
+                }
+                #endregion
+            }
+            catch(Exception e)
+            {
+                Plugin.mls.LogError($"this is an actual bad error, please report it on github with a screenshot and the modlist you're using, thanks\n{e}");
+                return;
             }
         }
+        #endregion
 
-        //the toggle void!
-        public void Toggle()
+        #region Other methods
+        private void Toggle()
         {
             if (!(player == null || cameraObject == null))
             {
@@ -331,26 +339,181 @@ namespace localFlashlight
                 locallight.enabled = flashState;
                 if (flashState)
                 {
-                    flashSource.PlayOneShot(toggleon);
-                    Plugin.mls.LogInfo("toggled light on");
+                    PlayNoise(toggleon, 0.6f);
+                    Plugin.mls.LogDebug("toggled light on");
                 }
                 else
                 {
                     if (batteryTime <= 0 && Plugin.BatteryBurnOut.Value)
                     {
                         regenCool = burnOutCooldown;
-                        Plugin.mls.LogInfo("No battery, setting cooldown to the burnt out value");
+                        Plugin.mls.LogDebug("No battery, setting cooldown to the burnt out value");
                     }
                     else
                     {
                         regenCool = batteryCooldown;
-                        Plugin.mls.LogInfo($"Battery at " + truePercentBattery.ToString("0.0") + "%" + ", setting cooldown to normal");
+                        Plugin.mls.LogDebug($"Battery at " + truePercentBattery.ToString("0.0") + "%" + ", setting cooldown to normal");
                     }
-                    if (batteryTime <= 0) flashSource.PlayOneShot(nochargetoggle);
-                    else flashSource.PlayOneShot(toggleoff);
-                    Plugin.mls.LogInfo("toggled light off");
+                    if (batteryTime <= 0) PlayNoise(nochargetoggle, 1);
+                    else PlayNoise(toggleoff, 0.6f);
+                    Plugin.mls.LogDebug("toggled light off");
                 }
             }
         }
+
+        private void ChangeLightPosition()
+        {
+            var lightPosX = lightObject.transform.localPosition.x;
+            var lightRotY = lightObject.transform.localRotation.y;
+            lightObject.transform.localPosition = new Vector3(-lightPosX, -0.55f, 0.5f);
+            lightObject.transform.localRotation = Quaternion.Euler(-10, -lightRotY, 0);
+            PlayNoise(changepos, 0.3f);
+            Plugin.mls.LogDebug("changed light position");
+        }
+
+        public static void PlayNoise(AudioClip audioClip, float volume)
+        {
+            flashSource.PlayOneShot(audioClip);
+            if (Plugin.soundAggros.Value) FindObjectOfType<RoundManager>().PlayAudibleNoise(lightObject.transform.position, 8, volume, 0, false, 0);
+            Plugin.mls.LogDebug("played sound");
+        }
+
+        private void holdCallback(InputAction.CallbackContext context)
+        {
+            if (selectedRechargeOption != RechargeOptions.Dynamo) return;
+            if (player_controller.quickMenuManager.isMenuOpen | player_controller.isPlayerDead | player_controller.inTerminalMenu | player_controller.isTypingChat) return;
+
+            flashSource.loop = true;
+            flashSource.clip = useDynamo;
+            flashSource.Play();
+            rechargeKeyHeld = true;
+            Plugin.mls.LogDebug("input press performed, starting dynamo use key hold");
+        }
+        private void releaseCallback(InputAction.CallbackContext context)
+        {
+            if (selectedRechargeOption != RechargeOptions.Dynamo) return;
+
+            flashSource.loop = false;
+            flashSource.clip = null;
+            flashSource.Stop();
+            soundCool = 0.25f;
+            rechargeKeyHeld = false;
+            Plugin.mls.LogDebug("input cancel performed, stopping dynamo use key hold");
+        }
+
+
+        private void SetFlashlightSounds()
+        {
+            selectedSoundOption = Plugin.soundOption.Value;
+            changepos = Plugin.bundle.LoadAsset<AudioClip>("changepos.ogg");
+
+            if (selectedSoundOption == SoundOptions.OriginalLightSounds)
+            {
+                toggleon = Plugin.bundle.LoadAsset<AudioClip>("lighton");
+                toggleoff = Plugin.bundle.LoadAsset<AudioClip>("lightoff");
+                denytoggle = Plugin.bundle.LoadAsset<AudioClip>("denytoggle");
+                nochargetoggle = Plugin.bundle.LoadAsset<AudioClip>("lowtoggle");
+                fullCharge = Plugin.bundle.LoadAsset<AudioClip>("recharged");
+
+                reloadLight = Plugin.bundle.LoadAsset<AudioClip>("reloadlight");
+                useDynamo = Plugin.bundle.LoadAsset<AudioClip>("dynamo1");
+                flashDown = Plugin.bundle.LoadAsset<AudioClip>("flashDown1");
+            }
+
+            if (selectedSoundOption == SoundOptions.OtherwordlyLight)
+            {
+                toggleon = Plugin.bundle.LoadAsset<AudioClip>("lighton1");
+                toggleoff = Plugin.bundle.LoadAsset<AudioClip>("lighton1");
+                denytoggle = Plugin.bundle.LoadAsset<AudioClip>("denytoggle");
+                nochargetoggle = Plugin.bundle.LoadAsset<AudioClip>("lowtoggle1");
+                fullCharge = Plugin.bundle.LoadAsset<AudioClip>("recharged2");
+
+                reloadLight = Plugin.bundle.LoadAsset<AudioClip>("reloadlight");
+                useDynamo = Plugin.bundle.LoadAsset<AudioClip>("dynamo2");
+                flashDown = Plugin.bundle.LoadAsset<AudioClip>("flashDown");
+            }
+
+            if (selectedSoundOption == SoundOptions.InGameFlashlight)
+            {
+                toggleon = Plugin.bundle.LoadAsset<AudioClip>("lighton2");
+                toggleoff = Plugin.bundle.LoadAsset<AudioClip>("lighton2");
+                denytoggle = Plugin.bundle.LoadAsset<AudioClip>("denytoggle");
+                nochargetoggle = Plugin.bundle.LoadAsset<AudioClip>("lowtoggle1");
+                fullCharge = Plugin.bundle.LoadAsset<AudioClip>("recharged1");
+
+                reloadLight = Plugin.bundle.LoadAsset<AudioClip>("reloadlight");
+                useDynamo = Plugin.bundle.LoadAsset<AudioClip>("dynamo");
+                flashDown = Plugin.bundle.LoadAsset<AudioClip>("flashDown2");
+            }
+
+            Plugin.mls.LogDebug("mod sounds set");
+        }
+
+        private void SetModValues()
+        {
+            flashState = false;
+            canToggle = true;
+            rechargeKeyHeld = false;
+
+            maxBatteryTime = Plugin.BatteryLife.Value;
+            batteryTime = maxBatteryTime;
+            batteryRegen = Plugin.RechargeMult.Value;
+
+            burnOutCooldown = Plugin.BurnOutCool.Value;
+            batteryCooldown = Plugin.BatteryCool.Value;
+
+            UIHideTime = 2f + Plugin.HideUIDelay.Value;
+
+            enabledShadows = Plugin.ShadowsEnabled.Value;
+            selectedRechargeOption = Plugin.rechargeOption.Value;
+
+            playerMovementSpeed = player_controller.movementSpeed;
+
+            Plugin.mls.LogDebug("mod values set");
+        }
+
+        private void UpdateModValues()
+        {
+            publicFlashState = flashState;
+            regenCool -= Time.deltaTime;
+
+            BatteryPercent = (int)(Math.Ceiling(batteryTime / maxBatteryTime * 100));
+            BatteryClamped = batteryTime / maxBatteryTime;
+            truePercentBattery = BatteryClamped * 100;
+
+            locallight.color = new Color((float)Plugin.FlashColorRed.Value / 255, (float)Plugin.FlashColorGreen.Value / 255, (float)Plugin.FlashColorBlue.Value / 255);
+            locallight.range = Plugin.Range.Value;
+            locallight.spotAngle = Plugin.Angle.Value;
+            flashSource.volume = Plugin.FlashVolume.Value;
+
+            shakeCool = Plugin.shakeActionCooldown.Value;
+
+            //handles what to do when the player is dead
+            if (player_controller.isPlayerDead)
+            {
+                flashState = false;
+                locallight.enabled = false;
+                batteryTime = maxBatteryTime;
+                regenCool = 0;
+                canToggle = true;
+                rechargeKeyHeld = false;
+            }
+        }
+
+        private void WindUpFlashlight()
+        {
+            if (selectedRechargeOption != RechargeOptions.Dynamo) return;
+
+            batteryTime += (Time.deltaTime * 1.25f) * batteryRegen;
+            player_controller.movementSpeed = playerMovementSpeed * Plugin.dynamoUseMoveMult.Value;
+            player_controller.sprintMeter -= Time.deltaTime * 0.05f;
+            if (soundCool < 0)
+            {
+                FindObjectOfType<RoundManager>().PlayAudibleNoise(lightObject.transform.position, 8, 0.5f, 0, player_controller.isInHangarShipRoom, 0);
+                soundCool = 0.3f;
+            }
+            soundCool -= Time.deltaTime;
+        }
+        #endregion
     }
 }
