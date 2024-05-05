@@ -1,3 +1,15 @@
+# **V1.3**
+- Added config option for various battery recharge methods, each with their upsides and downsides (and some with configs).
+- Added full recharge sounds to the flashlight when using the time recharge config
+- Added config option for sounds to be heard by enemies (default is set to true)
+- Cleaned up code for optimization
+- Made most logs debug logs to avoid log spam
+- Made it so the error caused by the mod not finding the local player only gets sent once instead of every time per frame
+- The HUD no longer shows up if the light doesn't work
+- Made ```InGameFlashlight``` the default sound option for the mod to use
+- Made configs look cleaner (at least when looking at them with LethalConfig)
+- Changed some names for the sound options
+
 # **V1.2.21**
 - Fixed light not turning on anymore (with the "Prioritize in-game flashlights" config set to true) if the player dies until they pick up and drop another flashlight
 - Changed some position and rotation values of the light
