@@ -62,6 +62,6 @@ Alternatively, you could use [LethalConfig](https://thunderstore.io/c/lethal-com
 >[!IMPORTANT]
 >This mod is CLIENT-SIDED, so everyone who wants to use these features must have the mod installed.
 >This also means that other players will not be able to see your light, nor you will be able to see other players' lights if they use the mod (hence the mod being called **Local**Flashlight).
->I am planning to add a way to make it so it is a sort of "crew upgrade" for people with the mod installed to have their own light instead of just having it enabled by default (assuming the host also has the mod installed).
+I am also planning to add a way to make it so it is a sort of "crew upgrade" for people with the mod installed to have their own light instead of just having it enabled by default (assuming the host also has the mod installed).
 
 If you found a bug, then feel free to open a new issue on the [Github page](https://github.com/ever39/LocalFlashlight/issues) to report it.
