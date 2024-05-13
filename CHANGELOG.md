@@ -1,3 +1,10 @@
+# **V1.3.1**
+- Added flashlight dimming (with config to set at what battery percentage the light should stop dimming)
+- Added flashlight flickering when the battery runs out or when ghost girl changes behavior state and flickers every other light (default is set to true)
+- Hopefully fixed some bugs related to the "Prioritize flashlights in player inventory" config
+- Changed the way the mod's assetbundle is loaded to prevent using up memory while loading it
+- Added 5 frames of leniency before the mod sends an error message if it has errors while trying to find the local player controller
+
 # **V1.3**
 - Added config option for various battery recharge methods, each with their upsides and downsides (and some with configs).
 - Added full recharge sounds to the flashlight when using the time recharge config
