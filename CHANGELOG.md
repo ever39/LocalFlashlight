@@ -1,3 +1,13 @@
+# **V1.4.2**
+- Fixed networking not working at all, alongside the two changes.
+- Also added ```TerminalApi``` as a dependency. It will be used in future updates.
+
+# **V1.4.11**
+- Fixed the flickering when the battery ran out not occuring due to an oversight in the sound playing part of the mod, where it would forget to check for networking before calling the server rpc
+
+# **V1.4.1**
+- really quick hotfix because i messed up while trying to clean up part of the code related to the Time recharge method (forgot to cap the battery time so it would go over the max battery time for other recharge options)
+
 # **V1.4**
 - Added ```LethalConfig``` as a dependency to make setting configs easier for the player (and also other things besides that)
 - Changed color configs to a hex code instead of three separate configs for red, green and blue values (for the flashlight and the indicator)
