@@ -1,8 +1,29 @@
+# **V1.4**
+- Added ```LethalConfig``` as a dependency to make setting configs easier for the player (and also other things besides that)
+- Changed color configs to a hex code instead of three separate configs for red, green and blue values (for the flashlight and the indicator)
+- Fixed pretty much all the bugs related to the ```Prioritize in-game flashlights``` setting
+- Reworked the ```Apparatice``` recharge method to function based on the power inside the facility (and renamed it accordingly to ```FacilityPowered```)
+- Made some adjustments to the ```Dynamo``` recharge method (higher total recharge power, though it requires a little time to ramp up)
+- Made the sound played when recharging the flashlight using the ```Dynamo``` recharge method ramp up and back down instead of abruptly playing and stopping
+- Added option to adjust the in-game's natural "dark area light" intensity percentage to make seeing in dark areas dependent on the flashlight (set to 50% of the normal ambient light intensity by default)
+- Added setting to choose if the flashlight should be fully charged when you enter orbit (default: true)
+- Fixed some scraps held by player blocking the light if the ```Enable shadows``` config was enabled
+- The flashlight no longer needs to be turned on to change its position and rotation (from left to right and vice-versa)
+- Changed some existing sounds in some of the sound options
+- Fixed vertical rotation inconsistencies when switching flashlight positions for the first time after joining a game
+- Reworked how sounds are loaded to account for other players using different sound options
+- Removed config related to enemies hearing sound, and with this change some sounds were changed to no longer be heard by enemies
+- Added a way for all players to see eachother's lights using networking. This is still something that's worked on, so it's still an experimental feature.
+- Overall code improvements, which should solve some issues with lag (if there were any that I wasn't aware of).
+- Made some configs even clearer, and added a few caps to their values
+
+**! make sure to remake the config file (deleting and generating it again by opening the game), as i'm pretty sure some configs will no longer apply any changes because they've either had their name changed or have been outright deleted.**
+
 # **V1.3.1**
 - Added flashlight dimming (with config to set at what battery percentage the light should stop dimming)
 - Added flashlight flickering when the battery runs out or when ghost girl changes behavior state and flickers every other light (default is set to true)
 - Hopefully fixed some bugs related to the "Prioritize flashlights in player inventory" config
-- Changed the way the mod's assetbundle is loaded to prevent using up memory while loading it
+- Changed the way the mod's assetbundle is loaded to prevent using up RAM while loading it
 - Added 5 frames of leniency before the mod sends an error message if it has errors while trying to find the local player controller
 
 # **V1.3**
@@ -30,7 +51,7 @@
 - Changed some config descriptions to be more clear about what they do (i recommend deleting the config file as it might cause some issues if the new configs overlap the old ones)
 
 # **V1.2.1**
-- Added LCInputUtils as dependency for easier keybind configuration
+- Added ```LCInputUtils``` as dependency for easier keybind configuration
 - Added sound options (currently only two of them, Default and ActualFlashlight)
 - Updated README file to add installation and configuration, and a small note about the new keybind configurations
 
