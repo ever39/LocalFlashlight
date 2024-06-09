@@ -1,3 +1,6 @@
+# **V1.4.12**
+-just changed the version number, as 11 is higher than 2 (i did not take that into account)
+
 # **V1.4.2**
 - Fixed networking not working at all, alongside the two changes.
 - Also added ```TerminalApi``` as a dependency. It will be used in future updates.
