@@ -283,10 +283,10 @@ namespace LocalFlashlight
                 flashlightClips[4] = Plugin.bundle.LoadAsset<AudioClip>("lowtoggle1");
                 flashlightClips[6] = Plugin.bundle.LoadAsset<AudioClip>("recharged1");
                 flashlightClips[8] = Plugin.bundle.LoadAsset<AudioClip>("reloadlight");
-                flashlightClips[12] = Plugin.bundle.LoadAsset<AudioClip>("dynamo");
-                flashlightClips[14] = Plugin.bundle.LoadAsset<AudioClip>("flashDown2");
-                flashlightClips[16] = Plugin.bundle.LoadAsset<AudioClip>("changepos.ogg");
-                flashlightClips[18] = Plugin.bundle.LoadAsset<AudioClip>("denytoggle");
+                flashlightClips[10] = Plugin.bundle.LoadAsset<AudioClip>("dynamo");
+                flashlightClips[12] = Plugin.bundle.LoadAsset<AudioClip>("flashDown2");
+                flashlightClips[14] = Plugin.bundle.LoadAsset<AudioClip>("changepos.ogg");
+                flashlightClips[16] = Plugin.bundle.LoadAsset<AudioClip>("denytoggle");
 
                 if (Plugin.hasLCSoundTool)
                 {
@@ -309,10 +309,10 @@ namespace LocalFlashlight
                     activeClips[2] = 4;
                     activeClips[3] = 6;
                     activeClips[4] = 8;
-                    activeClips[5] = 12;
-                    activeClips[6] = 14;
-                    activeClips[7] = 16;
-                    activeClips[8] = 18;
+                    activeClips[5] = 10;
+                    activeClips[6] = 12;
+                    activeClips[7] = 14;
+                    activeClips[8] = 16;
                     #endregion
                 }
                 Plugin.mls.LogDebug("loaded sound assets...");
@@ -326,10 +326,10 @@ namespace LocalFlashlight
                         activeClips[2] = 4;
                         activeClips[3] = 6;
                         activeClips[4] = 8;
-                        activeClips[5] = 12;
-                        activeClips[6] = 14;
-                        activeClips[7] = 16;
-                        activeClips[8] = 18;
+                        activeClips[5] = 10;
+                        activeClips[6] = 12;
+                        activeClips[7] = 14;
+                        activeClips[8] = 16;
                         return;
 
                     case SoundOptions.CustomSounds:
