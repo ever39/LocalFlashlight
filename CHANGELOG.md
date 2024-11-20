@@ -6,9 +6,9 @@
 - Laser pointers no longer count as flashlights to the ```Prioritize in-game flashlights``` config
 - Recharging the dynamo flashlight is now also heard for other players with networking enabled
 - Added settings for the light's position and rotation (with two positions, the "left" and the "right" positions and rotations)
-- Added option to add custom sounds to the flashlight (requires LCSoundTool to work, it'll default to the in-game flashlight sounds if it isn't installed/enabled)
+- Added option for enabling custom sounds to the flashlight (requires LCSoundTool to work, it'll default to the in-game flashlight sounds if it isn't installed or enabled)
 - Deleted every sound option besides ```In-game flashlight```, as custom sounds have been added
-- Changed some config names and descriptions to make them clearer, **(you might have to regenerate the config file, by deleting the previous config file and opening the game to generate a new config file, so the configs can register properly)**
+- Changed some config names and descriptions to make them clearer, **(you will probably have to regenerate the config file, by deleting the previous config file and opening the game to generate a new config file, so the configs can register properly)**
 
 # **V1.4.13**
 - Fixed ```Ambient light intensity multiplier``` not working as intended
