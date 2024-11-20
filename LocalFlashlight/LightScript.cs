@@ -282,7 +282,7 @@ namespace LocalFlashlight
                 flashlightClips[2] = Plugin.bundle.LoadAsset<AudioClip>("lighton2");
                 flashlightClips[4] = Plugin.bundle.LoadAsset<AudioClip>("lowtoggle1");
                 flashlightClips[6] = Plugin.bundle.LoadAsset<AudioClip>("recharged1");
-                flashlightClips[8] = Plugin.bundle.LoadAsset<AudioClip>("reloadlight"); //change the sound!!!!!!! idiot...... that's not in-game but ok D:
+                flashlightClips[8] = Plugin.bundle.LoadAsset<AudioClip>("reloadlight");
                 flashlightClips[12] = Plugin.bundle.LoadAsset<AudioClip>("dynamo");
                 flashlightClips[14] = Plugin.bundle.LoadAsset<AudioClip>("flashDown2");
                 flashlightClips[16] = Plugin.bundle.LoadAsset<AudioClip>("changepos.ogg");
