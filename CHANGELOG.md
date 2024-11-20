@@ -1,7 +1,21 @@
-# **V1.4.12**
--just changed the version number, as 11 is higher than 2 (i did not take that into account)
+# **V1.5**
+- Added warning popup when launching the game (or exiting a lobby) with networking enabled
+- Fixed networked lights not turning off when their respective player dies
+- Added ```LobbyCompatibility``` as a soft dependency (to check and disable joining other lobbies without the mod and its networking)
+- Added compatibility with ```ReservedItemSlots``` (as a soft dependency, only used for the ```Prioritize in-game flashlights``` config to work properly when a flashlight is in a reserved slot)
+- Laser pointers no longer count as flashlights to the ```Prioritize in-game flashlights``` config
+- Recharging the dynamo flashlight is now also heard for other players with networking enabled
+- Added settings for the light's position and rotation (with two positions, the "left" and the "right" positions and rotations)
+- Added option to add custom sounds to the flashlight (requires LCSoundTool to work, it'll default to the in-game flashlight sounds if it isn't installed/enabled)
+- Deleted every sound option besides ```In-game flashlight```, as custom sounds have been added
+- Changed some config names and descriptions to make them clearer, **(you might have to regenerate the config file, by deleting the previous config file and opening the game to generate a new config file, so the configs can register properly)**
 
-# **V1.4.2**
+# **V1.4.13**
+- Fixed ```Ambient light intensity multiplier``` not working as intended
+- Added audio occlusion to other players' lights when using networking (so you can't fully hear flashlight sounds through walls)
+- Fixed noises audible to the world sometimes not working properly when inside the ship while its doors are closed
+
+# **V1.4.12**
 - Fixed networking not working at all, alongside the two changes.
 - Also added ```TerminalApi``` as a dependency. It will be used in future updates.
 
