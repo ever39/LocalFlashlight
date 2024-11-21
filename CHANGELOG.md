@@ -1,7 +1,7 @@
 # **V1.5.1**
 - Fixed the ```Full battery recharge sound toggle``` config not working
 - Fixed a gamebreaking bug that prevented players with the mod from loading the company building (because the mod couldn't find breaker box to determine if the power was on or off)
-- Added a config to adjust other players' flashlight volumes (with networking enabled, doesn't affect normal flashlights)
+- Added a config to adjust other players' flashlight volumes (in lobbies with networking enabled, doesn't affect normal flashlights)
 
 # **V1.5**
 - Added warning popup when launching the game (or exiting a lobby) with networking enabled
