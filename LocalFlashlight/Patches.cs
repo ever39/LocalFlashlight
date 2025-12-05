@@ -60,7 +60,7 @@ namespace LocalFlashlight
             GameObject lightController = GameObject.Find("LightController");
             if (lightController != null)
                 Destroy(lightController);
-            TerminalApi.TerminalApi.DeleteKeyword("LocalFlashlight");
+            //TerminalApi.TerminalApi.DeleteKeyword("LocalFlashlight");
 
             //despawning all existing light objects (and hopefully fixing a networking bug where lights would be lingering after leaving a lobby)
             try

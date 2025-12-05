@@ -3,7 +3,6 @@ using LocalFlashlight.Compatibilities;
 using LocalFlashlight.Networking;
 using System;
 using System.Collections;
-using TerminalApi.Classes;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.HighDefinition;
@@ -76,12 +75,12 @@ namespace LocalFlashlight
 
             localLight.enabled = false;
 
-            TerminalApi.TerminalApi.AddCommand("LocalFlashlight", new CommandInfo()
+            /*TerminalApi.TerminalApi.AddCommand("LocalFlashlight", new CommandInfo()
             {
                 Category = "other",
                 Description = Plugin.enableNetworking.Value ? "Displays statistics about the flashlight's usage" : "Displays statistics about the flashlight's usage",
                 DisplayTextSupplier = onCommandParse
-            });
+            });*/
         }
 
         #region Update void
@@ -552,7 +551,7 @@ namespace LocalFlashlight
                     }
                     return;
 
-                case RechargeOptions.HandCranked: //change to handcranked? idk
+                case RechargeOptions.HandCranked:
                     if (!(player_controller.quickMenuManager.isMenuOpen && player_controller.isPlayerDead && player_controller.isTypingChat && player_controller.inSpecialInteractAnimation))
                     {
                         Plugin.flashlightToggleInstance.rechargeKey.performed += holdCallback;
@@ -576,6 +575,10 @@ namespace LocalFlashlight
                 case RechargeOptions.FacilityPowered:
                     if (Patches.isFacilityPowered)
                         batteryTime = maxBatteryTime;
+                    return;
+
+                case RechargeOptions.CameraMovementAssistedRecharge:
+                    batteryTime += (player_controller.playerActions.Movement.Look.ReadValue<Vector2>().magnitude * batteryRegen) * 0.0005f;
                     return;
             }
         }
@@ -614,9 +617,8 @@ namespace LocalFlashlight
             yield return new WaitForSeconds(0.1f);
             localLight.enabled = false;
         }
-
-        ///remove terminalAPI?
-        private string onCommandParse()
+        ///UNUSED - terminalAPI related code
+/*      private string onCommandParse()
         {
             string terminalNode = null;
             terminalNode += "the command isn't fully implemented, nor is the upgrade system, so here's some stats from your entire game session up to this point\n\n";
@@ -637,9 +639,6 @@ namespace LocalFlashlight
             return terminalNode;
         }
 
-        /*
-        turns out, i did not take into account reloading files. Awesome! guess i'll finish main networking part, release update and then fix most stuff when i get more info on saves of mods
-        WON'T remove terminalAPI because i do want to keep the current playsession thing up, but i do have to learn saves to add the upgrade system in
         private string onNetworkCommandParse()
         {
             string buyNode = null;
@@ -668,15 +667,12 @@ namespace LocalFlashlight
             }
             return buyNode;
         }
-        */
 
-        //first command implemented in this mod that also has networking, gets unlocked after typing in the other command and also has a separate noun for it, just like LocalFlashlight buy will :)
-        ///maybe remove terminalAPI? i won't be using it, mainly because i don't think i can implement a flashlight upgrade system without proper saves, and that would need another dependency, and i doubt that most people will even use it
-        private string terminalSayHi()
+       private string terminalSayHi()
         {
             LFNetworkHandler.Instance?.SayHiServerRpc(player_controller.playerClientId);
             return "Said hello to all the people in the server!\n\nhow'd you find this anyway?\n";
-        }
+        }*/
         #endregion
     }
 }

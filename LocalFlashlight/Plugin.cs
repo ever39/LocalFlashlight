@@ -33,7 +33,6 @@ namespace LocalFlashlight
     [BepInPlugin(GUID, NAME, VERSION)]
     [BepInDependency("com.rune580.LethalCompanyInputUtils", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("ainavt.lc.lethalconfig", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInDependency("atomic.terminalapi", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("BMX.LobbyCompatibility", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("FlipMods.ReservedItemSlotCore", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("LCSoundTool", BepInDependency.DependencyFlags.SoftDependency)]
@@ -76,7 +75,7 @@ namespace LocalFlashlight
 
         public static ConfigEntry<bool> ShadowsEnabled { get; private set; }
         public static ConfigEntry<bool> soundAggros { get; private set; }
-        public static ConfigEntry<bool> flashlightToggleModSynergyquestionmark { get; private set; } //WHAT IS THIS CONFIG NAME??
+        public static ConfigEntry<bool> flashlightToggleModSynergyquestionmark { get; private set; } //WHAT IS THIS CONFIG NAME.
         public static ConfigEntry<int> shakeStaminaConsume { get; private set; }
         public static ConfigEntry<float> shakeActionCooldown { get; private set; }
         public static ConfigEntry<float> apparaticeFlashlightIntensityMult { get; private set; }
@@ -107,6 +106,7 @@ namespace LocalFlashlight
         public static ConfigEntry<float> lightRotX2 { get; private set; }
         public static ConfigEntry<float> lightRotY2 { get; private set; }
         public static ConfigEntry<float> lightRotZ2 { get; private set; }
+        public static ConfigEntry<bool> applyCustomPosToOthers { get; private set; }
 
         public static ConfigEntry<bool> networkingWarning { get; private set; }
         #endregion
@@ -321,14 +321,14 @@ namespace LocalFlashlight
                 //CanModifyCallback = modifyConfig modifying it in-game works just fine, no need to prevent config modifications when they clearly update
             }));
 
-            dimEnabled = Config.Bind<bool>("Other", "Enable light dimming", false, "The intensity of the flashlight dims down to a certain point");
+            dimEnabled = Config.Bind<bool>("Other", "Enable light dimming", true, "The intensity of the flashlight dims down to a certain point");
             LethalConfigManager.AddConfigItem(new BoolCheckBoxConfigItem(dimEnabled, new BoolCheckBoxOptions
             {
                 RequiresRestart = false,
                 //CanModifyCallback = modifyConfig same thing
             }));
 
-            flashlightStopDimBatteryValue = Config.Bind<int>("Other", "Minimum battery amount dim", 15, new ConfigDescription("The battery charge percentage at which the light stops dimming", new AcceptableValueRange<int>(0, 100)));
+            flashlightStopDimBatteryValue = Config.Bind<int>("Other", "Minimum battery amount dim", 25, new ConfigDescription("The battery charge percentage at which the light stops dimming", new AcceptableValueRange<int>(0, 100)));
             LethalConfigManager.AddConfigItem(new IntInputFieldConfigItem(flashlightStopDimBatteryValue, new IntInputFieldOptions
             {
                 RequiresRestart = false,
@@ -435,6 +435,13 @@ namespace LocalFlashlight
                 RequiresRestart = false,
                 Min = float.NegativeInfinity,
                 Max = float.PositiveInfinity
+            }));
+
+            applyCustomPosToOthers = Config.Bind("Light Positions and Rotations", "Apply custom positions to others?", false, new ConfigDescription("Toggles whether you can see others' flashlights with your custom positions if networking is enabled. Uses the first X, Y, Z custom position config values."));
+            LethalConfigManager.AddConfigItem(new BoolCheckBoxConfigItem(applyCustomPosToOthers, new BoolCheckBoxOptions
+            {
+                RequiresRestart = false,
+                CanModifyCallback = modifyConfig
             }));
 
             BatteryCool = Config.Bind<float>("Time battery recharge configs", "Battery recharge cooldown", 1, "The cooldown after turning the flashlight off for the battery to start recharging");

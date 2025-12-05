@@ -28,6 +28,7 @@ public enum RechargeOptions
 {
     Time,
     Shake,
+    CameraMovementAssistedRecharge,
     HandCranked,
     FacilityPowered
 }

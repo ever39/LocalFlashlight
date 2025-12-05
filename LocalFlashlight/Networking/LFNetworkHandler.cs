@@ -21,12 +21,12 @@ namespace LocalFlashlight.Networking
             base.OnNetworkSpawn();
         }
 
-        //whatever's below this comment is fine, whatever's above this comment has to stay since...... it's the base of the entire networking system alongside NetworkingPatches
+        //whatever's below this comment is fine, whatever's above this comment has to stay since it's the base of the entire networking system alongside NetworkingPatches
 
         [ServerRpc(RequireOwnership = false)]
         public void RequestAllLightsUpdateServerRpc()
         {
-            Plugin.mls.LogInfo("Recieved ServerRpc to update lights on all clients!!");
+            Plugin.mls.LogInfo("Recieved ServerRpc to update lights on all clients");
             AcceptAllLightUpdateRequestClientRpc();
         }
 
@@ -87,7 +87,7 @@ namespace LocalFlashlight.Networking
 
                 var lightObject = new GameObject($"lightObject ({clientId})");
                 lightObject.transform.SetParent(tempObject1.transform, false);
-                lightObject.transform.localPosition = new Vector3(0f, -0.55f, 0.5f);
+                lightObject.transform.localPosition = new Vector3(-0f + (Plugin.applyCustomPosToOthers.Value ? Plugin.lightPosX1.Value : 0), -0.55f + (Plugin.applyCustomPosToOthers.Value ? (Plugin.lightPosY1.Value + 0.55f) : 0), -0.1f + (Plugin.applyCustomPosToOthers.Value ? Plugin.lightPosZ1.Value : 0));
                 lightObject.transform.Rotate(new Vector3(-12, 3, 0));
 
                 Light realLight = lightObject.AddComponent<Light>();
@@ -243,15 +243,8 @@ namespace LocalFlashlight.Networking
             tempSource.loop = false;
         }
 
-        //list of needed rpcs:
-        ////!!!(v1.5) rpc for buying upgrade!! (next update maybe)
-        ////!!!(v1.5) rpc for updating upgrade states, and upgrade price based on host's settings (next update maybe)
-        //!!!(v1.5) rpc for dynamo audio (DONE, not quite as well as clientside but it works)
-
-        ///silly little fact: coroutines can run like separate tasks
-        ///on a sidenote, how do i even save and load stuff?
-
-        [ServerRpc(RequireOwnership = false)]
+        ///UNUSED - terminalAPI related code
+        /*[ServerRpc(RequireOwnership = false)]
         public void SayHiServerRpc(ulong clientId)
         {
             Plugin.mls.LogDebug("Recieved ServerRpc to say hi to the entire server :)");
@@ -263,6 +256,6 @@ namespace LocalFlashlight.Networking
         {
             Plugin.mls.LogDebug("displaying hello message to client");
             HUDManager.Instance.DisplayTip("hello!!", $"{StartOfRound.Instance.allPlayerScripts[clientId].playerUsername} said hi through the terminal!");
-        }
+        }*/
     }
 }
