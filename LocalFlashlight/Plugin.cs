@@ -38,7 +38,7 @@ namespace LocalFlashlight
     [BepInDependency("LCSoundTool", BepInDependency.DependencyFlags.SoftDependency)]
     public class Plugin : BaseUnityPlugin
     {
-        public const string VERSION = "1.5.2";
+        public const string VERSION = "1.5.3";
         public const string GUID = "command.localFlashlight";
         public const string NAME = "LocalFlashlight";
 
@@ -634,3 +634,4 @@ namespace LocalFlashlight
         }
     }
 }
+
